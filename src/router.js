@@ -71,7 +71,7 @@ export function createRouter({ onNavigate, isKnownSlug }) {
     if (url.search || url.hash) return; // let the browser handle anchors/queries
 
     const slug = slugFromPath(url.pathname);
-    if (!isKnownSlug(slug)) return; // e.g. /privacy.html — a real page load
+    if (!isKnownSlug(slug)) return; // e.g. /privacy — a real page load
 
     event.preventDefault();
     go(slug);

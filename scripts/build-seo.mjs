@@ -79,8 +79,8 @@ const FOOTER = `<footer class="site-footer">
     <nav class="site-footer__links" aria-label="Site">
       <a href="/">Home</a>
       <a href="/tools/">All tools</a>
-      <a href="/privacy.html">Privacy</a>
-      <a href="/terms.html">Terms</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
     </nav>
   </div>
 </footer>`;
@@ -470,8 +470,8 @@ function sitemap(tools) {
       priority: '0.7',
     })),
     ...tools.map((tool) => ({ loc: PRODUCTION_ORIGIN + '/' + tool.slug + '/', priority: '0.8' })),
-    { loc: PRODUCTION_ORIGIN + '/privacy.html', priority: '0.3' },
-    { loc: PRODUCTION_ORIGIN + '/terms.html', priority: '0.3' },
+    { loc: PRODUCTION_ORIGIN + '/privacy', priority: '0.3' },
+    { loc: PRODUCTION_ORIGIN + '/terms', priority: '0.3' },
   ];
 
   return `<?xml version="1.0" encoding="UTF-8"?>

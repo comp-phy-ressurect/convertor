@@ -161,12 +161,12 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://formatport.com/privacy.html</loc>
+    <loc>https://formatport.com/privacy</loc>
     <lastmod>2026-09-12</lastmod>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://formatport.com/terms.html</loc>
+    <loc>https://formatport.com/terms</loc>
     <lastmod>2026-09-12</lastmod>
     <priority>0.3</priority>
   </url>
