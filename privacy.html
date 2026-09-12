@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy — DevConvert</title>
+<meta name="description" content="How DevConvert handles your data: conversions run entirely in your browser, nothing is uploaded, and history stays in local storage on your own device.">
+<link rel="canonical" href="https://formatport.com/privacy.html">
+<meta name="robots" content="index, follow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%E2%87%84%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="/styles/main.css">
+</head>
+<body data-tool="privacy">
+
+<a class="skip-link" href="#privacy">Skip to the policy</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="/">
+      <span class="brand__mark" aria-hidden="true">⇄</span>
+      <span class="brand__name">DevConvert</span>
+    </a>
+
+    <p class="privacy-badge">
+      <span class="privacy-badge__dot" aria-hidden="true"></span>
+      100% local processing · up to 10 MiB
+    </p>
+  </div>
+</header>
+
+<main class="legal" id="privacy">
+
+  <h1>Privacy Policy</h1>
+  <p><strong>Last updated:</strong> [DATE]</p>
+
+  <p class="legal__template">
+    This is a template, not legal advice. It was written to describe how the DevConvert
+    software actually behaves, but it has not been reviewed by a lawyer and it does not
+    account for the jurisdictions you operate in, the obligations that apply to you, or any
+    changes you make to the site. Have a qualified lawyer review and adapt this document
+    before you publish it.
+  </p>
+
+  <h2>1. The short version</h2>
+  <p>
+    DevConvert is a static website. Every converter runs as JavaScript inside your own browser
+    tab. The text you paste, the files you open, and the output that is generated are handled
+    on your device and are not transmitted to us or to anyone else. There is no account, no
+    database and no server-side processing of your content.
+  </p>
+  <p>
+    The one thing that is not local is loading the page itself. That is an ordinary web request,
+    and section 4 explains exactly what it involves.
+  </p>
+
+  <h2>2. What happens to the content you convert</h2>
+  <p>
+    Converter input, files you open or drag onto the page, and the output that is produced are
+    processed locally in your browser. The application code contains no network-sending
+    mechanism at all: no <code>fetch</code>, no <code>XMLHttpRequest</code>, no
+    <code>navigator.sendBeacon</code>, no form submission and no third-party API call. Files are
+    read with the browser's File API and never uploaded; downloads are generated from an
+    in-memory blob on your own machine.
+  </p>
+  <p>
+    The content you convert is also never placed in the address bar. Each tool has its own
+    URL, such as <code>/json-to-yaml/</code>, but that URL only ever identifies the tool. This is
+    deliberate: content in a query string would end up in your browser history, in
+    <code>Referer</code> headers sent to other sites, and in server access logs.
+  </p>
+  <p>
+    Third-party libraries used for parsing (YAML, TOML, CSV, diffing and identifier generation)
+    are bundled with the site and served from the same origin. No request is made to a content
+    delivery network while you use the tools, and no library provider receives your input.
+  </p>
+
+  <h2>3. Local storage on your device</h2>
+  <p>
+    The site uses your browser's <code>localStorage</code> to remember things between visits.
+    This data stays in your browser. It is not synchronised, not backed up by us, and not
+    readable by us.
+  </p>
+  <p>What is stored:</p>
+  <ul>
+    <li>
+      <strong>History.</strong> Each conversion may be recorded as an entry containing the tool
+      identifier and label, a timestamp, the options you selected, and a truncated copy of your
+      input and output. Input and output are cut off at 4,000 characters each. By default the
+      most recent 20 entries are kept and older ones are discarded.
+    </li>
+    <li>
+      <strong>Presets.</strong> A named tool-and-options combination that you chose to save. A
+      preset stores option values, not the content you converted. Note that some options are
+      themselves text you typed — a regular expression and its replacement, a root type or
+      element name — and those are saved as part of the preset.
+    </li>
+    <li>
+      <strong>Settings.</strong> Your preferences, such as whether history is recorded, whether
+      conversions run automatically as you type, output line wrapping, and the theme.
+    </li>
+  </ul>
+  <p>
+    You are in control of all of it. History recording can be switched off in
+    <em>Settings</em>, in which case no new entries are written. The History panel has a
+    <em>Clear history</em> button, individual entries can be deleted, and presets can be removed
+    one by one. The <em>Delete all local data</em> button in Settings removes everything the site
+    has stored — history, presets and settings — in one action. Clearing site data through your
+    browser's own privacy controls has the same effect.
+  </p>
+  <p>
+    If your browser blocks storage — for example in a private window, or when the storage quota
+    is exhausted — the site falls back to keeping this data in memory for the current tab only,
+    and it disappears when you close the tab.
+  </p>
+
+  <h2>4. Server logs and network metadata</h2>
+  <p>
+    We want to be precise here rather than overstate the case. Saying that conversions are local
+    is a statement about your <em>content</em>. It is not a claim that visiting the site is
+    invisible.
+  </p>
+  <p>
+    Loading this website involves ordinary web requests for its HTML, CSS and JavaScript files.
+    Our hosting provider, and any content delivery network or reverse proxy sitting in
+    front of it, may record standard server log data about those requests, including your IP
+    address, your browser's user agent string, the date and time, and which URL you requested.
+    This happens with every website you visit and is a property of how the web works, not
+    something the application chooses to do.
+  </p>
+  <p>
+    That log data is generated and retained by the hosting infrastructure and is outside the
+    application's control. It is typically used for operational purposes such as serving
+    traffic, diagnosing outages and mitigating abuse. It does not contain the content you paste
+    into a converter, because that content is never sent.
+  </p>
+  <p>
+    [Operator: name your hosting provider and CDN here, link to their privacy documentation,
+    and state their log retention period if you know it.]
+  </p>
+
+  <h2>5. What the application does not do</h2>
+  <ul>
+    <li>No analytics or usage measurement of any kind is loaded.</li>
+    <li>No advertising, no ad networks and no ad personalisation.</li>
+    <li>No third-party trackers, tracking pixels, social widgets or embedded content.</li>
+    <li>No cookies are set by the application.</li>
+    <li>No accounts, no sign-up, no email address or other personal data collected.</li>
+    <li>No profiling and no automated decision-making.</li>
+    <li>Your content is never sold, shared or disclosed, because it is never received.</li>
+  </ul>
+
+  <h2>6. A note about the JWT Decoder</h2>
+  <p>
+    The JWT Decoder deliberately does not verify token signatures. Verification requires the
+    signing key, and fetching a key set would mean transmitting your token off your device. The
+    tool decodes locally and tells you it has not verified anything. See the Terms of Use for
+    what that means for how much you can trust a decoded token.
+  </p>
+  <p>
+    One consequence worth stating plainly: history recording is on by default, so a token you
+    decode is written to this browser's local storage along with its decoded claims, up to the
+    4,000-character limit described above. The same applies to any other secret you paste — an
+    API key inside a cURL command, for instance. Nothing leaves the device, but it does persist
+    on it. Turn history off in Settings, or use <em>Delete all local data</em>, if that matters
+    for what you are working with.
+  </p>
+
+  <h2>7. Children</h2>
+  <p>
+    This is a developer utility and is not directed at children. Because the site collects no
+    personal data and requires no account, it does not knowingly process children's data.
+  </p>
+
+  <h2>8. Your rights</h2>
+  <p>
+    Data protection law gives people rights over their personal data, such as access, correction
+    and erasure. In practice, the application holds none of your personal data to act on: the
+    only data associated with you lives in your own browser, where you can inspect and delete it
+    yourself at any time using the controls described in section 3. For server log data, contact
+    the operator at the address below.
+  </p>
+  <p>
+    [Operator: if you are subject to the GDPR, the UK GDPR, the CCPA or a similar regime, have a
+    lawyer set out the applicable legal bases, the data controller's identity, retention periods
+    and the relevant supervisory authority here.]
+  </p>
+
+  <h2>9. Changes to this policy</h2>
+  <p>
+    If this site later adds analytics, advertising, payments, error reporting, an account system,
+    or any other feature that transmits data off your device, this document must be updated
+    before that feature goes live, and the "Last updated" date must change. A privacy policy that
+    no longer matches the software is worse than none at all.
+  </p>
+  <p>
+    Material changes will be reflected on this page. Continuing to use the site after a change
+    means the updated policy applies.
+  </p>
+
+  <h2>10. Contact</h2>
+  <p>
+    Questions about this policy can be sent to
+    <a href="mailto:privacy@example.com">privacy@example.com</a>.
+  </p>
+  <p>
+    [Operator: replace this with a monitored address, and add a postal address and the legal
+    entity name if your jurisdiction requires one.]
+  </p>
+
+  <h2>11. Verify it yourself</h2>
+  <p>
+    You do not have to take any of this on trust. Open your browser's developer tools, switch to
+    the Network tab, filter to XHR and Fetch requests, and run as many conversions as you like.
+    The list stays empty. The site is also served with a Content Security Policy containing
+    <code>connect-src 'none'</code>, which instructs your browser to refuse every outbound
+    connection the page might attempt — so the guarantee is enforced by the browser, not only by
+    our word.
+  </p>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <p class="site-footer__privacy">
+      <strong>Private by design.</strong> Your input never leaves this browser. Conversions run
+      locally on your device. History and presets are stored only in this browser and you can clear
+      them at any time. No analytics are loaded by default. Uploaded files are read locally and are
+      never sent anywhere.
+    </p>
+    <nav class="site-footer__links" aria-label="Site">
+      <a href="/">Home</a>
+      <a href="/privacy.html">Privacy</a>
+      <a href="/terms.html">Terms</a>
+      <a href="/tests/">Test suite</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

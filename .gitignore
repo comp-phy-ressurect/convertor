@@ -1,0 +1,16 @@
+# Local environment
+.env
+.env.*
+!.env.example
+
+# OS and editor cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+.idea/
+.vscode/
+
+# Local working notes, not part of the published project
+claude_instructions.md
+todo_notes.txt

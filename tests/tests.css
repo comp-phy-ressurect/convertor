@@ -1,0 +1,99 @@
+/* tests.css — styles specific to the test harness. Tokens come from main.css. */
+
+.test-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 4rem;
+}
+.test-page__lead { color: var(--text-muted); max-width: 62ch; }
+
+.test-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 1.2rem 0;
+  padding: .7rem .9rem;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  position: sticky;
+  top: 3.4rem;
+  z-index: 5;
+}
+.test-controls__filter { font-size: .85rem; display: flex; align-items: center; gap: .35rem; }
+
+.test-summary { margin-left: auto; font-weight: 650; font-size: .9rem; }
+.test-summary--pass { color: var(--success); }
+.test-summary--fail { color: var(--danger); }
+
+.test-group { margin-bottom: 1.6rem; }
+.test-group h2 {
+  font-size: .76rem;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  color: var(--text-faint);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: .25rem;
+}
+
+.test-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+
+.test {
+  border-radius: var(--radius-sm);
+  padding: .3rem .55rem;
+  border-left: 3px solid transparent;
+}
+.test--pass { border-left-color: var(--success); }
+.test--fail { border-left-color: var(--danger); background: var(--danger-soft); }
+
+body.only-failures .test--pass { display: none; }
+body.only-failures .test-group:not(:has(.test--fail)) { display: none; }
+
+.test__head { display: flex; align-items: baseline; gap: .6rem; font-size: .88rem; }
+.test__badge {
+  font-family: var(--mono);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .05em;
+  padding: .05rem .35rem;
+  border-radius: 3px;
+  flex: 0 0 auto;
+}
+.test--pass .test__badge { background: var(--success-soft); color: var(--success); }
+.test--fail .test__badge { background: var(--danger); color: var(--bg-raised); }
+.test__name { flex: 1; }
+.test__time { font-size: .72rem; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+
+.test__message { margin: .3rem 0 .4rem; font-size: .85rem; font-weight: 600; color: var(--danger); }
+
+.test__diff { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: .6rem; }
+.test__block h3 {
+  font-size: .7rem;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--text-faint);
+  margin: 0 0 .2rem;
+}
+.test__block pre {
+  margin: 0;
+  padding: .4rem .5rem;
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: .76rem;
+  max-height: 240px;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+@media (max-width: 620px) {
+  .test-controls { position: static; }
+  .test-summary { margin-left: 0; flex-basis: 100%; }
+}
+
+/* A skipped test is not a passing test: it is a check that did not run. */
+.test--skip { border-left-color: var(--text-faint); opacity: .75; }
+.test--skip .test__badge { background: var(--bg-sunken); color: var(--text-faint); }
+.test__message--skip { color: var(--text-faint); font-weight: 400; }

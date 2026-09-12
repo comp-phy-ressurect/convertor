@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Timestamps and Identifiers · DevConvert</title>
+<meta name="description" content="Convert Unix timestamps between seconds, milliseconds and ISO 8601, and generate UUIDs and ULIDs.">
+<link rel="canonical" href="https://formatport.com/tools/time/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="DevConvert">
+<meta property="og:title" content="Timestamps and Identifiers · DevConvert">
+<meta property="og:description" content="Convert Unix timestamps between seconds, milliseconds and ISO 8601, and generate UUIDs and ULIDs.">
+<meta property="og:url" content="https://formatport.com/tools/time/">
+<meta property="og:locale" content="en">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Timestamps and Identifiers · DevConvert">
+<meta name="twitter:description" content="Convert Unix timestamps between seconds, milliseconds and ISO 8601, and generate UUIDs and ULIDs.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%E2%87%84%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="/styles/main.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Timestamps and Identifiers",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Unix Timestamp Converter",
+      "url": "https://formatport.com/unix-timestamp-converter/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "UUID Generator",
+      "url": "https://formatport.com/uuid-generator/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "ULID Generator",
+      "url": "https://formatport.com/ulid-generator/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Tools",
+      "item": "https://formatport.com/tools/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Time & identifiers",
+      "item": "https://formatport.com/tools/time/"
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#workspace">Skip to the tool list</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="/">
+      <span class="brand__mark" aria-hidden="true">⇄</span>
+      <span class="brand__name">DevConvert</span>
+    </a>
+
+    <button type="button" class="search-trigger" id="search-trigger" aria-haspopup="dialog">
+      <span aria-hidden="true">🔍</span>
+      <span class="search-trigger__label">Search tools</span>
+      <kbd class="search-trigger__kbd">Ctrl K</kbd>
+    </button>
+
+    <p class="privacy-badge">
+      <span class="privacy-badge__dot" aria-hidden="true"></span>
+      100% local processing · up to 10 MiB
+    </p>
+
+    <nav class="site-header__actions" aria-label="Application">
+      <button type="button" class="button button--ghost" id="history-trigger" aria-haspopup="dialog">History</button>
+      <button type="button" class="button button--ghost" id="presets-trigger" aria-haspopup="dialog">Presets</button>
+      <button type="button" class="button button--ghost" id="settings-trigger" aria-haspopup="dialog">Settings</button>
+    </nav>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="tool-nav" aria-label="All tools">
+    <section class="tool-nav__group">
+      <h3 class="tool-nav__heading"><a href="/tools/data/">Structured data</a></h3>
+      <ul class="tool-nav__list">
+      <li><a href="/convert/">Convert any format</a></li>
+      <li><a href="/json-to-yaml/">JSON → YAML</a></li>
+      <li><a href="/yaml-to-json/">YAML → JSON</a></li>
+      <li><a href="/json-to-toml/">JSON → TOML</a></li>
+      <li><a href="/toml-to-json/">TOML → JSON</a></li>
+      <li><a href="/json-to-csv/">JSON → CSV</a></li>
+      <li><a href="/csv-to-json/">CSV → JSON</a></li>
+      <li><a href="/json-formatter/">JSON Formatter</a></li>
+      </ul>
+    </section>
+    <section class="tool-nav__group">
+      <h3 class="tool-nav__heading"><a href="/tools/code/">Code generation</a></h3>
+      <ul class="tool-nav__list">
+      <li><a href="/json-to-typescript/">JSON → TypeScript</a></li>
+      <li><a href="/json-to-zod/">JSON → Zod</a></li>
+      <li><a href="/json-to-python/">JSON → Python</a></li>
+      <li><a href="/json-to-go/">JSON → Go</a></li>
+      <li><a href="/json-to-sql/">JSON → SQL</a></li>
+      <li><a href="/json-to-json-schema/">JSON → JSON Schema</a></li>
+      </ul>
+    </section>
+    <section class="tool-nav__group">
+      <h3 class="tool-nav__heading"><a href="/tools/encoding/">Encoding &amp; tokens</a></h3>
+      <ul class="tool-nav__list">
+      <li><a href="/jwt-decoder/">JWT Decoder</a></li>
+      <li><a href="/base64-encoder-decoder/">Base64 Encode / Decode</a></li>
+      <li><a href="/url-encoder-decoder/">URL Encode / Decode</a></li>
+      <li><a href="/curl-to-code/">cURL → code</a></li>
+      <li><a href="/hash-generator/">Hash Generator</a></li>
+      </ul>
+    </section>
+    <section class="tool-nav__group">
+      <h3 class="tool-nav__heading"><a href="/tools/time/">Time &amp; identifiers</a></h3>
+      <ul class="tool-nav__list">
+      <li><a href="/unix-timestamp-converter/">Unix Timestamp Converter</a></li>
+      <li><a href="/uuid-generator/">UUID Generator</a></li>
+      <li><a href="/ulid-generator/">ULID Generator</a></li>
+      </ul>
+    </section>
+    <section class="tool-nav__group">
+      <h3 class="tool-nav__heading"><a href="/tools/text/">Text tools</a></h3>
+      <ul class="tool-nav__list">
+      <li><a href="/case-converter/">Case Converter</a></li>
+      <li><a href="/regex-tester/">Regex Tester</a></li>
+      <li><a href="/diff-checker/">Diff Checker</a></li>
+      </ul>
+    </section>
+  </nav>
+
+  <main id="workspace" class="workspace">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="/tools/">Tools</a></li>
+      <li aria-current="page">Time &amp; identifiers</li>
+    </ol>
+  </nav>
+
+    <div class="app-root">
+      <h1>Timestamps and Identifiers</h1>
+      <p>Convert Unix timestamps between seconds, milliseconds and ISO 8601, and generate UUIDs and ULIDs.</p>
+
+      <div class="seo-body">
+
+      <ul>
+        <li><a href="/unix-timestamp-converter/">Unix Timestamp Converter</a> — Convert between Unix timestamps and human dates in any time zone.</li>
+        <li><a href="/uuid-generator/">UUID Generator</a> — Generate cryptographically random version 4 UUIDs.</li>
+        <li><a href="/ulid-generator/">ULID Generator</a> — Generate lexicographically sortable ULIDs.</li>
+      </ul>
+
+      <h2>Other categories</h2>
+      <ul>
+        <li><a href="/tools/data/">Data Format Converters</a></li>
+        <li><a href="/tools/code/">Code Generators</a></li>
+        <li><a href="/tools/encoding/">Encoding, Hashing and Tokens</a></li>
+        <li><a href="/tools/text/">Text Tools</a></li>
+      </ul>
+      <p><a href="/">DevConvert home</a></p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <p class="site-footer__privacy">
+      <strong>Private by design.</strong> Your input never leaves this browser. Conversions run
+      locally on your device. History and presets are stored only in this browser and you can clear
+      them at any time. No analytics are loaded by default. Uploaded files are read locally and are
+      never sent anywhere.
+    </p>
+    <nav class="site-footer__links" aria-label="Site">
+      <a href="/">Home</a>
+      <a href="/tools/">All tools</a>
+      <a href="/privacy.html">Privacy</a>
+      <a href="/terms.html">Terms</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

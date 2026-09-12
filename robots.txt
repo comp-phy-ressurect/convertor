@@ -1,0 +1,8 @@
+# DevConvert
+User-agent: *
+Allow: /
+
+# The test harness is for developers, not for search results.
+Disallow: /tests/
+
+Sitemap: https://formatport.com/sitemap.xml

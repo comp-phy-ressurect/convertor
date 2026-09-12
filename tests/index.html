@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DevConvert — Test Suite</title>
+<meta name="description" content="Browser test harness for the DevConvert converters and detectors.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="/styles/main.css">
+<link rel="stylesheet" href="/tests/tests.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="/">
+      <span class="brand__mark" aria-hidden="true">⇄</span>
+      <span class="brand__name">DevConvert</span>
+    </a>
+    <p class="privacy-badge"><span class="privacy-badge__dot" aria-hidden="true"></span> Test suite</p>
+  </div>
+</header>
+
+<main class="test-page">
+  <h1>Test suite</h1>
+  <p class="test-page__lead">
+    These tests run the pure converter and detector functions directly in this browser —
+    no framework, no build step, no network. Everything you see below was computed on this device.
+  </p>
+
+  <div class="test-controls">
+    <button type="button" class="button button--primary" id="run">Run all tests</button>
+    <label class="test-controls__filter">
+      <input type="checkbox" id="only-failures"> Show failures only
+    </label>
+    <span class="test-summary" id="summary" role="status" aria-live="polite">Not run yet.</span>
+  </div>
+
+  <div id="results" class="test-results"></div>
+</main>
+
+<script type="module" src="/tests/runner.js"></script>
+
+</body>
+</html>

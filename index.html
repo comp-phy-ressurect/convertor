@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DevConvert — Developer Converters That Run in Your Browser</title>
+<meta name="description" content="Twenty-plus developer converters — convert between JSON, YAML, TOML, CSV, TSV, XML and HTML tables, plus JWT, Base64, cURL, regex and hashes — running entirely in your browser. No upload, no signup, no tracking.">
+<link rel="canonical" href="https://formatport.com/">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="DevConvert">
+<meta property="og:title" content="DevConvert — Developer Converters That Run in Your Browser">
+<meta property="og:description" content="JSON, YAML, TOML, CSV, JWT, Base64, cURL, regex, hashes and more. Everything runs locally on your device.">
+<meta property="og:url" content="https://formatport.com/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DevConvert — Developer Converters That Run in Your Browser">
+<meta name="twitter:description" content="JSON, YAML, TOML, CSV, JWT, Base64, cURL, regex, hashes and more. Everything runs locally on your device.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%E2%87%84%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="/styles/main.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "DevConvert",
+  "url": "https://formatport.com/",
+  "description": "Developer converters for JSON, YAML, TOML, CSV, TSV, XML, JWT, Base64, cURL, regex, hashes and text, running entirely in the browser.",
+  "inLanguage": "en"
+}
+</script>
+</head>
+<body data-tool="home">
+
+<a class="skip-link" href="#workspace">Skip to the converter</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="/">
+      <span class="brand__mark" aria-hidden="true">⇄</span>
+      <span class="brand__name">DevConvert</span>
+    </a>
+
+    <button type="button" class="search-trigger" id="search-trigger" aria-haspopup="dialog">
+      <span aria-hidden="true">🔍</span>
+      <span class="search-trigger__label">Search tools</span>
+      <kbd class="search-trigger__kbd">Ctrl K</kbd>
+    </button>
+
+    <p class="privacy-badge">
+      <span class="privacy-badge__dot" aria-hidden="true"></span>
+      100% local processing · up to 10 MiB
+    </p>
+
+    <nav class="site-header__actions" aria-label="Application">
+      <button type="button" class="button button--ghost" id="history-trigger" aria-haspopup="dialog">History</button>
+      <button type="button" class="button button--ghost" id="presets-trigger" aria-haspopup="dialog">Presets</button>
+      <button type="button" class="button button--ghost" id="settings-trigger" aria-haspopup="dialog">Settings</button>
+    </nav>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- Full tool index. Real links, crawlable, and the app's navigation. -->
+  <nav class="tool-nav" id="tool-nav" aria-label="All tools">
+    <h2 class="tool-nav__title">Tools</h2>
+    <!-- Populated by app.js; the static list below is the no-JS fallback. -->
+    <noscript>
+      <ul class="tool-nav__list">
+        <li><a href="/convert/">Convert any format</a></li>
+        <li><a href="/json-to-yaml/">JSON → YAML</a></li>
+        <li><a href="/yaml-to-json/">YAML → JSON</a></li>
+        <li><a href="/json-to-toml/">JSON → TOML</a></li>
+        <li><a href="/toml-to-json/">TOML → JSON</a></li>
+        <li><a href="/json-to-csv/">JSON → CSV</a></li>
+        <li><a href="/csv-to-json/">CSV → JSON</a></li>
+        <li><a href="/json-formatter/">JSON Formatter</a></li>
+        <li><a href="/json-to-typescript/">JSON → TypeScript</a></li>
+        <li><a href="/json-to-zod/">JSON → Zod</a></li>
+        <li><a href="/json-to-python/">JSON → Python</a></li>
+        <li><a href="/json-to-go/">JSON → Go</a></li>
+        <li><a href="/json-to-sql/">JSON → SQL</a></li>
+        <li><a href="/json-to-json-schema/">JSON → JSON Schema</a></li>
+        <li><a href="/jwt-decoder/">JWT Decoder</a></li>
+        <li><a href="/base64-encoder-decoder/">Base64 Encode / Decode</a></li>
+        <li><a href="/url-encoder-decoder/">URL Encode / Decode</a></li>
+        <li><a href="/curl-to-code/">cURL → code</a></li>
+        <li><a href="/hash-generator/">Hash Generator</a></li>
+        <li><a href="/unix-timestamp-converter/">Unix Timestamp Converter</a></li>
+        <li><a href="/uuid-generator/">UUID Generator</a></li>
+        <li><a href="/ulid-generator/">ULID Generator</a></li>
+        <li><a href="/case-converter/">Case Converter</a></li>
+        <li><a href="/regex-tester/">Regex Tester</a></li>
+        <li><a href="/diff-checker/">Diff Checker</a></li>
+      </ul>
+    </noscript>
+  </nav>
+
+  <main id="workspace" class="workspace">
+    <!--
+      Static content below is what a crawler and a no-JS visitor see.
+      app.js replaces it with the interactive workspace on load.
+    -->
+    <div id="app" class="app-root">
+      <section class="intro">
+        <h1>Developer converters that run entirely in your browser</h1>
+        <p class="intro__lead">
+          DevConvert is a toolbox of JSON, YAML, TOML, CSV, TSV, XML, JWT, Base64, cURL, regex,
+          hash and text converters — pick any input and output format and it converts between them. Everything is parsed and generated locally by JavaScript in this tab.
+          There is no server component, no account, and no analytics.
+        </p>
+        <p class="intro__privacy">
+          <strong>Private by design.</strong> Your input never leaves this browser.
+          Conversions run locally on your device.
+        </p>
+        <h2>Popular converters</h2>
+        <ul class="intro__grid">
+          <li><a href="/convert/">Convert any format</a> — JSON, YAML, TOML, CSV, TSV, XML and HTML tables, any pair</li>
+          <li><a href="/json-to-yaml/">JSON to YAML</a> — readable config from an API response</li>
+          <li><a href="/csv-to-json/">CSV to JSON</a> — spreadsheet exports into records</li>
+          <li><a href="/json-to-typescript/">JSON to TypeScript</a> — interfaces from a sample payload</li>
+          <li><a href="/jwt-decoder/">JWT Decoder</a> — inspect claims without uploading the token</li>
+          <li><a href="/curl-to-code/">cURL to code</a> — fetch, axios or Python requests</li>
+          <li><a href="/regex-tester/">Regex Tester</a> — with a worker timeout so the tab never freezes</li>
+        </ul>
+
+        <h2>Browse by category</h2>
+        <ul class="intro__grid">
+          <li><a href="/tools/data/">Data format converters</a> — JSON, YAML, TOML, CSV, TSV, XML and HTML tables, any pair</li>
+          <li><a href="/tools/code/">Code generators</a> — TypeScript, Zod, Python, Go, SQL and JSON Schema from a JSON sample</li>
+          <li><a href="/tools/encoding/">Encoding, hashing and tokens</a> — Base64, URL encoding, SHA-256, MD5, JWT and cURL</li>
+          <li><a href="/tools/time/">Timestamps and identifiers</a> — Unix time, ISO 8601, UUID and ULID</li>
+          <li><a href="/tools/text/">Text tools</a> — case conversion, regex testing and diffing</li>
+        </ul>
+        <p><a href="/tools/">See all 25 tools</a></p>
+      </section>
+    </div>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <p class="site-footer__privacy">
+      <strong>Private by design.</strong> Your input never leaves this browser. Conversions run
+      locally on your device. History and presets are stored only in this browser and you can clear
+      them at any time. No analytics are loaded by default. Uploaded files are read locally and are
+      never sent anywhere.
+    </p>
+    <nav class="site-footer__links" aria-label="Site">
+      <a href="/">Home</a>
+      <a href="/privacy.html">Privacy</a>
+      <a href="/terms.html">Terms</a>
+      <a href="/tests/">Test suite</a>
+    </nav>
+  </div>
+</footer>
+
+<!-- Dialogs live at the end of the body so focus management is predictable. -->
+<div class="palette" id="palette" role="dialog" aria-modal="true" aria-labelledby="palette-title" hidden>
+  <div class="palette__backdrop" data-close-dialog></div>
+  <div class="palette__panel">
+    <h2 class="visually-hidden" id="palette-title">Search tools</h2>
+    <label class="visually-hidden" for="palette-input">Search tools</label>
+    <input type="search" id="palette-input" class="palette__input" placeholder="Search converters…"
+           autocomplete="off" spellcheck="false" role="combobox" aria-expanded="true"
+           aria-controls="palette-results" aria-autocomplete="list">
+    <ul class="palette__results" id="palette-results" role="listbox" aria-label="Tools"></ul>
+    <p class="palette__hint">↑ ↓ to move · Enter to open · Esc to close</p>
+  </div>
+</div>
+
+<div class="drawer" id="history-drawer" role="dialog" aria-modal="true" aria-labelledby="history-title" hidden>
+  <div class="drawer__backdrop" data-close-dialog></div>
+  <div class="drawer__panel">
+    <div class="drawer__head">
+      <h2 id="history-title">History</h2>
+      <button type="button" class="button button--icon" data-close-dialog aria-label="Close history">✕</button>
+    </div>
+    <p class="drawer__note" id="history-note"></p>
+    <div class="drawer__body" id="history-body"></div>
+    <div class="drawer__foot">
+      <button type="button" class="button button--danger" id="history-clear">Clear history</button>
+    </div>
+  </div>
+</div>
+
+<div class="drawer" id="presets-drawer" role="dialog" aria-modal="true" aria-labelledby="presets-title" hidden>
+  <div class="drawer__backdrop" data-close-dialog></div>
+  <div class="drawer__panel">
+    <div class="drawer__head">
+      <h2 id="presets-title">Presets</h2>
+      <button type="button" class="button button--icon" data-close-dialog aria-label="Close presets">✕</button>
+    </div>
+    <p class="drawer__note">A preset stores the current tool and its options. Saved in this browser only.</p>
+    <form class="preset-form" id="preset-form">
+      <label for="preset-name">Preset name</label>
+      <div class="preset-form__row">
+        <input type="text" id="preset-name" name="name" placeholder="e.g. Semicolon CSV" required maxlength="60">
+        <button type="submit" class="button button--primary">Save current setup</button>
+      </div>
+    </form>
+    <div class="drawer__body" id="presets-body"></div>
+  </div>
+</div>
+
+<div class="drawer" id="settings-drawer" role="dialog" aria-modal="true" aria-labelledby="settings-title" hidden>
+  <div class="drawer__backdrop" data-close-dialog></div>
+  <div class="drawer__panel">
+    <div class="drawer__head">
+      <h2 id="settings-title">Settings</h2>
+      <button type="button" class="button button--icon" data-close-dialog aria-label="Close settings">✕</button>
+    </div>
+    <div class="drawer__body" id="settings-body"></div>
+    <div class="drawer__foot">
+      <button type="button" class="button button--danger" id="clear-everything">Delete all local data</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script type="module" src="/src/app.js"></script>
+</body>
+</html>

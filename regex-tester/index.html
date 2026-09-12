@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Regex Tester — Runs in a Worker, Times Out Safely · DevConvert</title>
+<meta name="description" content="Test JavaScript regular expressions in your browser. Matches run in a Web Worker with a timeout so the page never freezes.">
+<link rel="canonical" href="https://formatport.com/regex-tester/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="DevConvert">
+<meta property="og:title" content="Regex Tester — Runs in a Worker, Times Out Safely · DevConvert">
+<meta property="og:description" content="Test JavaScript regular expressions in your browser. Matches run in a Web Worker with a timeout so the page never freezes.">
+<meta property="og:url" content="https://formatport.com/regex-tester/">
+<meta property="og:locale" content="en">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Regex Tester — Runs in a Worker, Times Out Safely · DevConvert">
+<meta name="twitter:description" content="Test JavaScript regular expressions in your browser. Matches run in a Web Worker with a timeout so the page never freezes.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%E2%87%84%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="/styles/main.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Regex Tester",
+  "description": "Test JavaScript regular expressions in your browser. Matches run in a Web Worker with a timeout so the page never freezes.",
+  "url": "https://formatport.com/regex-tester/",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Any browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "isAccessibleForFree": true
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Tools",
+      "item": "https://formatport.com/tools/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Text tools",
+      "item": "https://formatport.com/tools/text/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Regex Tester",
+      "item": "https://formatport.com/regex-tester/"
+    }
+  ]
+}
+</script>
+</head>
+<body data-tool="regex-tester">
+
+<a class="skip-link" href="#workspace">Skip to the converter</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="/">
+      <span class="brand__mark" aria-hidden="true">⇄</span>
+      <span class="brand__name">DevConvert</span>
+    </a>
+
+    <button type="button" class="search-trigger" id="search-trigger" aria-haspopup="dialog">
+      <span aria-hidden="true">🔍</span>
+      <span class="search-trigger__label">Search tools</span>
+      <kbd class="search-trigger__kbd">Ctrl K</kbd>
+    </button>
+
+    <p class="privacy-badge">
+      <span class="privacy-badge__dot" aria-hidden="true"></span>
+      100% local processing · up to 10 MiB
+    </p>
+
+    <nav class="site-header__actions" aria-label="Application">
+      <button type="button" class="button button--ghost" id="history-trigger" aria-haspopup="dialog">History</button>
+      <button type="button" class="button button--ghost" id="presets-trigger" aria-haspopup="dialog">Presets</button>
+      <button type="button" class="button button--ghost" id="settings-trigger" aria-haspopup="dialog">Settings</button>
+    </nav>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="tool-nav" id="tool-nav" aria-label="All tools">
+    <section class="tool-nav__group">
+      <h3 class="tool-nav__heading"><a href="/tools/data/">Structured data</a></h3>
+      <ul class="tool-nav__list">
+      <li><a href="/convert/">Convert any format</a></li>
+      <li><a href="/json-to-yaml/">JSON → YAML</a></li>
+      <li><a href="/yaml-to-json/">YAML → JSON</a></li>
+      <li><a href="/json-to-toml/">JSON → TOML</a></li>
+      <li><a href="/toml-to-json/">TOML → JSON</a></li>
+      <li><a href="/json-to-csv/">JSON → CSV</a></li>
+      <li><a href="/csv-to-json/">CSV → JSON</a></li>
+      <li><a href="/json-formatter/">JSON Formatter</a></li>
+      </ul>
+    </section>
+    <section class="tool-nav__group">
+      <h3 class="tool-nav__heading"><a href="/tools/code/">Code generation</a></h3>
+      <ul class="tool-nav__list">
+      <li><a href="/json-to-typescript/">JSON → TypeScript</a></li>
+      <li><a href="/json-to-zod/">JSON → Zod</a></li>
+      <li><a href="/json-to-python/">JSON → Python</a></li>
+      <li><a href="/json-to-go/">JSON → Go</a></li>
+      <li><a href="/json-to-sql/">JSON → SQL</a></li>
+      <li><a href="/json-to-json-schema/">JSON → JSON Schema</a></li>
+      </ul>
+    </section>
+    <section class="tool-nav__group">
+      <h3 class="tool-nav__heading"><a href="/tools/encoding/">Encoding &amp; tokens</a></h3>
+      <ul class="tool-nav__list">
+      <li><a href="/jwt-decoder/">JWT Decoder</a></li>
+      <li><a href="/base64-encoder-decoder/">Base64 Encode / Decode</a></li>
+      <li><a href="/url-encoder-decoder/">URL Encode / Decode</a></li>
+      <li><a href="/curl-to-code/">cURL → code</a></li>
+      <li><a href="/hash-generator/">Hash Generator</a></li>
+      </ul>
+    </section>
+    <section class="tool-nav__group">
+      <h3 class="tool-nav__heading"><a href="/tools/time/">Time &amp; identifiers</a></h3>
+      <ul class="tool-nav__list">
+      <li><a href="/unix-timestamp-converter/">Unix Timestamp Converter</a></li>
+      <li><a href="/uuid-generator/">UUID Generator</a></li>
+      <li><a href="/ulid-generator/">ULID Generator</a></li>
+      </ul>
+    </section>
+    <section class="tool-nav__group">
+      <h3 class="tool-nav__heading"><a href="/tools/text/">Text tools</a></h3>
+      <ul class="tool-nav__list">
+      <li><a href="/case-converter/">Case Converter</a></li>
+      <li><a href="/regex-tester/" aria-current="page">Regex Tester</a></li>
+      <li><a href="/diff-checker/">Diff Checker</a></li>
+      </ul>
+    </section>
+  </nav>
+
+  <main id="workspace" class="workspace">
+    <!--
+      Static content for crawlers and for visitors without JavaScript.
+      app.js replaces #app with the interactive workspace on load, breadcrumb
+      included, so navigating to another tool updates the trail.
+    -->
+    <div id="app" class="app-root">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="/tools/">Tools</a></li>
+      <li><a href="/tools/text/">Text tools</a></li>
+      <li aria-current="page">Regex Tester</li>
+    </ol>
+  </nav>
+
+      <h1>Regex Tester</h1>
+      <p>Test a regular expression against text with highlighted matches and capture groups.</p>
+
+      <div class="seo-body">
+      <p>Private by design. Your input never leaves this browser. Conversions run locally on your device.</p>
+
+      <h2>What this tool handles</h2>
+      <ul>
+        <li>Matches or replaces, with the g, i, m, s, u, v, y and d flags.</li>
+        <li>Shows every match with its index and its capture groups.</li>
+        <li>The pattern runs in a Web Worker that is killed after 750 ms, so catastrophic backtracking cannot freeze the tab.</li>
+        <li>Replacement supports $1, $2 and named group references.</li>
+      </ul>
+
+      <h2>Related tools</h2>
+      <ul>
+        <li><a href="/case-converter/">Case Converter</a> — Convert text between camelCase, snake_case, kebab-case and six more styles.</li>
+        <li><a href="/diff-checker/">Diff Checker</a> — Compare two texts or two JSON documents line by line or word by word.</li>
+      </ul>
+      <p><a href="/tools/">Browse all 25 tools</a></p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <p class="site-footer__privacy">
+      <strong>Private by design.</strong> Your input never leaves this browser. Conversions run
+      locally on your device. History and presets are stored only in this browser and you can clear
+      them at any time. No analytics are loaded by default. Uploaded files are read locally and are
+      never sent anywhere.
+    </p>
+    <nav class="site-footer__links" aria-label="Site">
+      <a href="/">Home</a>
+      <a href="/tools/">All tools</a>
+      <a href="/privacy.html">Privacy</a>
+      <a href="/terms.html">Terms</a>
+    </nav>
+  </div>
+</footer>
+
+<div class="palette" id="palette" role="dialog" aria-modal="true" aria-labelledby="palette-title" hidden>
+  <div class="palette__backdrop" data-close-dialog></div>
+  <div class="palette__panel">
+    <h2 class="visually-hidden" id="palette-title">Search tools</h2>
+    <label class="visually-hidden" for="palette-input">Search tools</label>
+    <input type="search" id="palette-input" class="palette__input" placeholder="Search converters…"
+           autocomplete="off" spellcheck="false" role="combobox" aria-expanded="true"
+           aria-controls="palette-results" aria-autocomplete="list">
+    <ul class="palette__results" id="palette-results" role="listbox" aria-label="Tools"></ul>
+    <p class="palette__hint">↑ ↓ to move · Enter to open · Esc to close</p>
+  </div>
+</div>
+
+<div class="drawer" id="history-drawer" role="dialog" aria-modal="true" aria-labelledby="history-title" hidden>
+  <div class="drawer__backdrop" data-close-dialog></div>
+  <div class="drawer__panel">
+    <div class="drawer__head">
+      <h2 id="history-title">History</h2>
+      <button type="button" class="button button--icon" data-close-dialog aria-label="Close history">✕</button>
+    </div>
+    <p class="drawer__note" id="history-note"></p>
+    <div class="drawer__body" id="history-body"></div>
+    <div class="drawer__foot">
+      <button type="button" class="button button--danger" id="history-clear">Clear history</button>
+    </div>
+  </div>
+</div>
+
+<div class="drawer" id="presets-drawer" role="dialog" aria-modal="true" aria-labelledby="presets-title" hidden>
+  <div class="drawer__backdrop" data-close-dialog></div>
+  <div class="drawer__panel">
+    <div class="drawer__head">
+      <h2 id="presets-title">Presets</h2>
+      <button type="button" class="button button--icon" data-close-dialog aria-label="Close presets">✕</button>
+    </div>
+    <p class="drawer__note">A preset stores the current tool and its options. Saved in this browser only.</p>
+    <form class="preset-form" id="preset-form">
+      <label for="preset-name">Preset name</label>
+      <div class="preset-form__row">
+        <input type="text" id="preset-name" name="name" placeholder="e.g. Semicolon CSV" required maxlength="60">
+        <button type="submit" class="button button--primary">Save current setup</button>
+      </div>
+    </form>
+    <div class="drawer__body" id="presets-body"></div>
+  </div>
+</div>
+
+<div class="drawer" id="settings-drawer" role="dialog" aria-modal="true" aria-labelledby="settings-title" hidden>
+  <div class="drawer__backdrop" data-close-dialog></div>
+  <div class="drawer__panel">
+    <div class="drawer__head">
+      <h2 id="settings-title">Settings</h2>
+      <button type="button" class="button button--icon" data-close-dialog aria-label="Close settings">✕</button>
+    </div>
+    <div class="drawer__body" id="settings-body"></div>
+    <div class="drawer__foot">
+      <button type="button" class="button button--danger" id="clear-everything">Delete all local data</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script type="module" src="/src/app.js"></script>
+</body>
+</html>

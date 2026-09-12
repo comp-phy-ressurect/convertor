@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Terms of Use — DevConvert</title>
+<meta name="description" content="Terms of use for DevConvert: converters are provided as is, generated code must be reviewed before production use, and JWT decoding does not verify signatures.">
+<link rel="canonical" href="https://formatport.com/terms.html">
+<meta name="robots" content="index, follow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%E2%87%84%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="/styles/main.css">
+</head>
+<body data-tool="terms">
+
+<a class="skip-link" href="#terms">Skip to the terms</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="/">
+      <span class="brand__mark" aria-hidden="true">⇄</span>
+      <span class="brand__name">DevConvert</span>
+    </a>
+
+    <p class="privacy-badge">
+      <span class="privacy-badge__dot" aria-hidden="true"></span>
+      100% local processing · up to 10 MiB
+    </p>
+  </div>
+</header>
+
+<main class="legal" id="terms">
+
+  <h1>Terms of Use</h1>
+  <p><strong>Last updated:</strong> [DATE]</p>
+
+  <p class="legal__template">
+    This is a template, not legal advice. It sets out the intended position in plain language,
+    but it has not been reviewed by a lawyer, it does not reflect the law of any particular
+    jurisdiction, and some clauses below may be unenforceable or may need to be worded
+    differently where you operate. Have a qualified lawyer review and adapt this document before
+    you publish it.
+  </p>
+
+  <h2>1. Acceptance</h2>
+  <p>
+    By using DevConvert you agree to these terms. If you do not agree with them, do not use the
+    site. These terms apply to every tool on the site.
+  </p>
+
+  <h2>2. What the service is</h2>
+  <p>
+    DevConvert is a free collection of developer utilities that run in your web browser. It
+    converts and inspects data formats, generates code and schemas from samples, computes
+    digests, and compares texts. It is a convenience tool for developers. It is not a
+    professional service, and no engineering, security, legal or compliance advice is being
+    given.
+  </p>
+
+  <h2>3. Provided "as is"</h2>
+  <p>
+    The tools are provided <strong>"as is" and "as available", without warranty of any kind</strong>,
+    whether express, implied or statutory. To the fullest extent permitted by law, we disclaim all
+    warranties, including any implied warranty of merchantability, fitness for a particular
+    purpose, accuracy, non-infringement, and uninterrupted or error-free operation.
+  </p>
+  <p>
+    We do not warrant that any conversion is correct, complete, lossless or suitable for your
+    purpose. Format conversion is frequently lossy in ways that depend on your data — for
+    example, TOML has no null type, and CSV has no way to express nesting. Each tool lists its
+    own known limitations on its page. Read them.
+  </p>
+
+  <h2>4. Generated output must be reviewed by a human</h2>
+  <p>
+    Several tools generate code, schemas or SQL from a sample you provide. This output is a
+    starting point produced by pattern inference. It is not a specification, and it is not
+    reviewed by anyone.
+  </p>
+  <ul>
+    <li>
+      <strong>Generated TypeScript, Zod schemas, Python dataclasses, Go structs and JSON Schema
+      describe the sample you pasted, not your real data contract.</strong> A field that happens
+      never to be null in your sample will be typed as non-nullable. Fields that appear in every
+      sampled object will be marked required even if they are genuinely optional.
+    </li>
+    <li>
+      <strong>Generated SQL is a first draft of a table definition.</strong> Column types come
+      from the sample only; column widths, indexes, constraints, foreign keys and normalisation
+      are not inferred. Nested values are stored as JSON or text rather than being modelled.
+      Review and adapt any <code>CREATE TABLE</code> statement before running it against a
+      database.
+    </li>
+    <li>
+      <strong>Generated request code from a cURL command is a translation, not an equivalent.</strong>
+      Shell expansion is not evaluated, and pipes, redirections, chained commands, multipart
+      uploads, file references and client certificates are reported rather than converted.
+    </li>
+  </ul>
+  <p>
+    <strong>Review, test and understand any generated artefact before using it in production.</strong>
+    DevConvert never executes what it generates — the output is text, no database is contacted and
+    no HTTP request described by a cURL command is made — and neither should you, until you have
+    read it.
+  </p>
+
+  <h2>5. JWT decoding does not verify signatures</h2>
+  <p>
+    The JWT Decoder splits a token, decodes its header and payload, and displays the claims. It
+    performs <strong>no signature verification whatsoever</strong>. This is a deliberate design
+    decision: verifying a signature requires the signing key, and retrieving a key set would mean
+    transmitting your token off your device, which this site does not do.
+  </p>
+  <p>
+    The consequence matters and must not be misunderstood: <strong>a decoded token proves nothing
+    about its authenticity.</strong> Anyone can construct a token containing any claims they like.
+    The decoder will display it exactly as readably as a genuine one. Never make an
+    authentication, authorisation or trust decision on the basis of what this tool shows you.
+    Verify tokens in your application, with the issuer's key, using a library built for the
+    purpose.
+  </p>
+  <p>
+    Likewise, MD5 and SHA-1 are offered by the Hash Generator for compatibility with legacy
+    systems only. MD5 is a checksum and is not secure for cryptographic use, and SHA-1 is broken
+    for collision resistance. Do not choose either for anything security-relevant.
+  </p>
+
+  <h2>6. Your responsibilities</h2>
+  <p>You are responsible for:</p>
+  <ul>
+    <li>
+      <strong>What you paste.</strong> Processing happens in your browser, but that browser is on
+      a device that may be shared, managed, backed up, screen-recorded or subject to your
+      employer's policies. Before pasting production secrets, access tokens, customer records or
+      other confidential material into any tool — including this one — satisfy yourself that doing
+      so is permitted and appropriate.
+    </li>
+    <li>
+      <strong>How you use the output.</strong> Reviewing, testing and validating anything you take
+      from this site before relying on it, and complying with the licences and policies that apply
+      to the data you process.
+    </li>
+    <li>
+      <strong>Lawful use.</strong> Not using the site to break the law, to infringe anyone's
+      rights, to process data you have no right to process, or to attack, overload or interfere
+      with the site or its infrastructure.
+    </li>
+  </ul>
+  <p>
+    Conversion history and presets are saved in your own browser's local storage. Managing and
+    clearing that data is under your control, and the Privacy Policy explains how.
+  </p>
+
+  <h2>7. Limitation of liability</h2>
+  <p>
+    To the fullest extent permitted by law, we shall not be liable for any indirect, incidental,
+    special, consequential, punitive or exemplary damages, or for any loss of profits, revenue,
+    business, goodwill, data or anticipated savings, arising out of or in connection with your use
+    of, or inability to use, this site — regardless of the theory of liability and even if we have
+    been advised of the possibility of such damages.
+  </p>
+  <p>
+    This expressly includes damage arising from incorrect, incomplete or lossy conversion output,
+    from generated code or schemas that did not match your real data, and from any reliance placed
+    on an unverified JWT.
+  </p>
+  <p>
+    To the extent that liability cannot lawfully be excluded, our total aggregate liability to you
+    is limited to the amount you have paid to use the site, which for the free tools described
+    here is zero.
+  </p>
+  <p>
+    Nothing in these terms excludes or limits liability that cannot be excluded or limited under
+    applicable law, such as liability for death or personal injury caused by negligence, or for
+    fraud.
+  </p>
+
+  <h2>8. Availability and changes</h2>
+  <p>
+    The site is provided on a best-effort basis with no uptime commitment. We may change, suspend,
+    limit or discontinue any tool, or the entire site, at any time and without notice, and we are
+    under no obligation to maintain it or to preserve anything stored in your browser. Do not
+    build a process that depends on this site remaining available; the converters are utilities,
+    not infrastructure.
+  </p>
+  <p>
+    These terms may be updated. The "Last updated" date above will change when they are.
+    Continuing to use the site after a change means you accept the revised terms.
+  </p>
+
+  <h2>9. Intellectual property</h2>
+  <p>
+    The DevConvert source code and site content are the property of their owner and are not
+    released under an open-source licence. Third-party libraries bundled with the site remain
+    subject to their own licences, which are reproduced in the project's third-party notices.
+  </p>
+  <p>
+    You retain all rights in the data you paste into a tool. We claim nothing in it, and because it
+    is never transmitted, we never receive it.
+  </p>
+
+  <h2>10. Governing law</h2>
+  <p>
+    These terms are governed by the laws of [JURISDICTION], and the courts of [JURISDICTION] shall
+    have exclusive jurisdiction over any dispute arising from them, without regard to conflict of
+    law principles.
+  </p>
+  <p>
+    [Operator: a lawyer should set the governing law and forum to match where you are established,
+    and check that this choice is enforceable against consumers in the places your users are.]
+  </p>
+
+  <h2>11. Severability</h2>
+  <p>
+    If any provision of these terms is found to be unenforceable, that provision shall be limited
+    or removed to the minimum extent necessary, and the remaining provisions shall stay in full
+    force.
+  </p>
+
+  <h2>12. Contact</h2>
+  <p>
+    Questions about these terms can be sent to
+    <a href="mailto:legal@example.com">legal@example.com</a>.
+  </p>
+  <p>
+    [Operator: replace this with a monitored address, and add the legal entity name and postal
+    address if your jurisdiction requires one.]
+  </p>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <p class="site-footer__privacy">
+      <strong>Private by design.</strong> Your input never leaves this browser. Conversions run
+      locally on your device. History and presets are stored only in this browser and you can clear
+      them at any time. No analytics are loaded by default. Uploaded files are read locally and are
+      never sent anywhere.
+    </p>
+    <nav class="site-footer__links" aria-label="Site">
+      <a href="/">Home</a>
+      <a href="/privacy.html">Privacy</a>
+      <a href="/terms.html">Terms</a>
+      <a href="/tests/">Test suite</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
