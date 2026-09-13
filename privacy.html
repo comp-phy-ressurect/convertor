@@ -31,7 +31,7 @@
 <main class="legal" id="privacy">
 
   <h1>Privacy Policy</h1>
-  <p><strong>Last updated:</strong> [DATE]</p>
+  <p><strong>Last updated:</strong> 13 September 2026</p>
 
   <p class="legal__template">
     This is a template, not legal advice. It was written to describe how the DevConvert
@@ -134,13 +134,26 @@
     into a converter, because that content is never sent.
   </p>
   <p>
-    [Operator: name your hosting provider and CDN here, link to their privacy documentation,
-    and state their log retention period if you know it.]
+    Concretely: this site is served by <a href="https://pages.cloudflare.com/">Cloudflare
+    Pages</a>, and Cloudflare is also the content delivery network in front of it, so it is
+    Cloudflare that records those request logs. How Cloudflare handles them is described in the
+    <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare Privacy Policy</a>.
+  </p>
+  <p>
+    The operator of this site does look at the aggregate traffic statistics Cloudflare derives
+    from those edge logs: how many requests and visitors arrived over time, which pages were
+    requested, which sites linked here, which countries requests came from, and which HTTP
+    status codes were returned. These are counted at the network edge, from requests that pass
+    through it anyway. No measurement script, cookie or identifier is added to this page in
+    order to produce them, they do not follow you between sites, and they contain nothing you
+    typed into a converter, because that never leaves your browser.
   </p>
 
   <h2>5. What the application does not do</h2>
   <ul>
-    <li>No analytics or usage measurement of any kind is loaded.</li>
+    <li>No analytics or measurement script of any kind is loaded into this page.
+        Aggregate traffic statistics counted at the network edge are described in
+        section 4.</li>
     <li>No advertising, no ad networks and no ad personalisation.</li>
     <li>No third-party trackers, tracking pixels, social widgets or embedded content.</li>
     <li>No cookies are set by the application.</li>

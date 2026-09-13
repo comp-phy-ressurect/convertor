@@ -57,8 +57,11 @@ Cloudflare. That distinction is the whole design:
 
 - No `<script>` on any page, no cookie, no client-side identifier.
 - `connect-src 'none'` stays intact — a beacon would need a hole in it.
-- `privacy.html` stays true as written. It promises that no analytics are
-  *loaded*; edge counting loads nothing.
+- The claim in `privacy.html` that no analytics are *loaded* stays true, because
+  edge counting loads nothing. That is not the same as saying nothing is
+  measured, so section 4 of that page names Cloudflare and says plainly which
+  aggregate statistics the operator looks at. Keep those two in step: if the
+  measurement changes, the page has to change with it.
 - The dashboard sits behind the Cloudflare account login. That is real
   authentication, unlike a secret URL, which leaks through git history,
   `Referer` headers, certificate transparency logs and browser history — and
