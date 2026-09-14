@@ -71,7 +71,7 @@ const YAML_EXAMPLE = [
 ].join('\n');
 
 const TOML_EXAMPLE = [
-  'title = "DevConvert"',
+  'title = "FormatPort"',
   'active = true',
   '',
   '[owner]',
@@ -260,7 +260,7 @@ const TOOLS = [
     metaDescription:
       'Convert JSON to TOML in your browser. TOML has no null type, so null values are dropped — see the notes below.',
     keywords: ['json', 'toml', 'config'],
-    input: { label: 'JSON', language: 'json', example: JSON.stringify({ title: 'DevConvert', active: true, owner: { name: 'Ada Lovelace' }, ports: [8080, 8443] }, null, 2), accept: '.json,.txt' },
+    input: { label: 'JSON', language: 'json', example: JSON.stringify({ title: 'FormatPort', active: true, owner: { name: 'Ada Lovelace' }, ports: [8080, 8443] }, null, 2), accept: '.json,.txt' },
     output: { label: 'TOML', extension: '.toml', language: 'toml' },
     swap: 'toml-to-json',
     formats: { from: 'json', to: 'toml' },
@@ -536,7 +536,7 @@ const TOOLS = [
     keywords: ['curl', 'fetch', 'axios', 'python', 'requests', 'http'],
     input: { label: 'cURL command', language: 'shell', example: CURL_EXAMPLE, accept: '.txt,.sh' },
     output: { label: 'Generated code', extension: '.js', language: 'javascript' },
-    banner: { level: 'info', text: 'The command is parsed as text. DevConvert never executes it and never sends the request.' },
+    banner: { level: 'info', text: 'The command is parsed as text. FormatPort never executes it and never sends the request.' },
     options: [
       { id: 'target', label: 'Target', type: 'select', default: 'fetch', choices: [{ value: 'fetch', label: 'JavaScript fetch()' }, { value: 'axios', label: 'axios' }, { value: 'python', label: 'Python requests' }] },
     ],

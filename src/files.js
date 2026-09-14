@@ -133,7 +133,7 @@ export function mimeForExtension(extension) {
 /** Build a stable, filesystem-safe download name for a tool's output. */
 export function downloadNameFor(tool, extension) {
   const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-  const base = (tool?.slug ?? 'devconvert').replace(/[^a-z0-9-]/gi, '-');
+  const base = (tool?.slug ?? 'formatport').replace(/[^a-z0-9-]/gi, '-');
   return base + '-' + stamp + (extension ?? '.txt');
 }
 

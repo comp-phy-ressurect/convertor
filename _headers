@@ -1,6 +1,6 @@
 # Cloudflare Pages / Netlify header rules.
 #
-# The Content-Security-Policy below is the enforcement behind DevConvert's
+# The Content-Security-Policy below is the enforcement behind FormatPort's
 # privacy claim: connect-src 'none' means the page is not permitted to open a
 # network connection of any kind — no fetch, no XHR, no WebSocket, no beacon.
 # Even if a future dependency tried to phone home, the browser would block it.
@@ -23,3 +23,15 @@
 
 /src/*
   Cache-Control: public, max-age=3600
+
+# The test harness is a developer page, not a search result. The HTML already
+# carries <meta name="robots" content="noindex">; this header says the same
+# thing for tests.js and tests.css, which have no <head> to put a tag in.
+/tests/*
+  X-Robots-Tag: noindex, nofollow
+
+# Build tooling is served because the host serves the repository as-is. It is
+# not site content, and og-image.html in particular is a real HTML page that
+# should never turn up as a search result.
+/scripts/*
+  X-Robots-Tag: noindex, nofollow

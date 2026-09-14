@@ -1,0 +1,80 @@
+# Ping IndexNow after Cloudflare Pages has published a push to main.
+#
+# Deployment here is "push to main"; Cloudflare Pages watches the repository and
+# serves the files directly. There is no build to hook into, so this workflow is
+# the integration point: it runs on the same event that deploys, waits for the
+# new files to actually be live, then tells the IndexNow engines which public
+# pages changed.
+#
+# Design notes:
+#
+#   * Only pushes that touch a real page trigger it. Editing src/, styles/ or a
+#     .md file changes no URL, and announcing one would be noise.
+#   * It submits only the pages in the push, not the whole sitemap. Use
+#     `node scripts/indexnow.mjs --all` by hand after a large restructure.
+#   * It is allowed to fail. The site is already live and in sitemap.xml by the
+#     time this runs; a missed ping costs days of latency, not correctness.
+#     `continue-on-error` keeps a red X off the commit for an outage that is
+#     not ours.
+#   * No secret is needed. The IndexNow key is public by protocol — it is served
+#     at /<key>.txt — so the committed key file is the credential the API checks.
+
+name: IndexNow
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '*/index.html'
+      - 'tools/**/index.html'
+      - 'index.html'
+      - 'privacy.html'
+      - 'terms.html'
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: 'Which URLs to submit'
+        required: true
+        default: 'changed'
+        type: choice
+        options: [changed, all]
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # --changed diffs against the previous commit, which has to be present.
+          fetch-depth: 2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # Pages publishes asynchronously. Submitting a URL before it is served
+      # invites the engine to crawl the old file, so wait for the deploy to
+      # land instead of guessing with a fixed sleep.
+      - name: Wait for the deploy to go live
+        run: |
+          for attempt in $(seq 1 30); do
+            if curl -fsS -o /dev/null https://formatport.com/sitemap.xml; then
+              echo "Site is responding (attempt $attempt)."
+              sleep 20   # let the edge finish picking up the rest of the files
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Site did not respond in time; submitting anyway."
+
+      - name: Submit to IndexNow
+        run: |
+          if [ "${{ github.event.inputs.scope }}" = "all" ]; then
+            node scripts/indexnow.mjs --all
+          else
+            node scripts/indexnow.mjs --changed "${{ github.event.before }}"
+          fi

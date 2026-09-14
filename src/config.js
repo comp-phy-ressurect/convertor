@@ -9,7 +9,7 @@
 export const PRODUCTION_ORIGIN = 'https://formatport.com';
 
 export const PRODUCT = Object.freeze({
-  name: 'DevConvert',
+  name: 'FormatPort',
   tagline: 'Developer converters that run entirely in your browser',
   privacyBadge: '100% local processing',
   privacyStatement:
@@ -18,7 +18,7 @@ export const PRODUCT = Object.freeze({
 
 /**
  * Base path the app is served from. '/' for a root deployment; set it to
- * '/devconvert/' for a GitHub Pages project site. Every internal link is built
+ * '/formatport/' for a GitHub Pages project site. Every internal link is built
  * through router.js so this is the only knob you need.
  */
 export const BASE_PATH = '/';
@@ -49,6 +49,12 @@ export const LIMITS = Object.freeze({
   regexTimeoutMs: 750,
 });
 
+/**
+ * localStorage keys. These keep the old `devconvert:` prefix on purpose: the
+ * product was renamed to FormatPort, but anyone who used the site before the
+ * rename still has their history, presets and settings under these keys.
+ * Changing the prefix would silently discard their data, so it stays.
+ */
 export const STORAGE_KEYS = Object.freeze({
   history: 'devconvert:history:v1',
   presets: 'devconvert:presets:v1',

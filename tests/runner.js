@@ -118,7 +118,7 @@ async function run() {
   summaryNode.textContent =
     passed + ' passed, ' + failed + ' failed' + (skipped ? ', ' + skipped + ' skipped' : '') + ', ' + results.length + ' total in ' + elapsed.toFixed(0) + ' ms';
   summaryNode.className = 'test-summary ' + (failed ? 'test-summary--fail' : 'test-summary--pass');
-  document.title = (failed ? '✗ ' + failed + ' failing' : '✓ all passing') + ' — DevConvert tests';
+  document.title = (failed ? '✗ ' + failed + ' failing' : '✓ all passing') + ' — FormatPort tests';
 
   runButton.disabled = false;
   runButton.textContent = 'Run all tests';

@@ -49,7 +49,7 @@ export const PAGE_CONTENT = {
       'Null values are dropped and every dropped path is reported.',
       'Nested objects become TOML tables and arrays of objects become [[array]] blocks.',
     ],
-    sample: { input: '{"title":"DevConvert","owner":{"name":"Ada"},"ports":[80,443]}' },
+    sample: { input: '{"title":"FormatPort","owner":{"name":"Ada"},"ports":[80,443]}' },
   },
 
   'toml-to-json': {
@@ -58,7 +58,7 @@ export const PAGE_CONTENT = {
       'Tables, inline tables and arrays of tables all become plain JSON objects and arrays.',
       'Invalid TOML reports the line and column rather than a raw parser message.',
     ],
-    sample: { input: 'title = "DevConvert"\n\n[owner]\nname = "Ada"\nactive = true\n' },
+    sample: { input: 'title = "FormatPort"\n\n[owner]\nname = "Ada"\nactive = true\n' },
   },
 
   'json-to-csv': {
@@ -256,4 +256,47 @@ export const PAGE_CONTENT = {
       'Additions and removals carry a glyph as well as a colour.',
     ],
   },
+};
+
+/**
+ * SEARCH_INTENT — the query a person is most plausibly typing when they should
+ * land on a given tool, plus how hard that query is to win.
+ *
+ * This is editorial judgement, not measured data. It exists so
+ * SEO_INDEX_INVENTORY.md can be regenerated instead of hand-maintained, and so
+ * the "which pages do we push first" decision is written down somewhere
+ * reviewable rather than re-argued each time. Once Search Console has real
+ * query data, that data wins over anything guessed here.
+ *
+ * tier:
+ *   1  high-volume, obvious intent — worth requesting indexing for on day one
+ *   2  real demand, narrower or more competitive
+ *   3  low volume or long-tail; indexed, but not worth pushing
+ */
+export const SEARCH_INTENT = {
+  'format-converter': { query: 'convert json to yaml / csv / toml / xml (any pair)', tier: 2 },
+  'json-to-yaml': { query: 'json to yaml converter', tier: 1 },
+  'yaml-to-json': { query: 'yaml to json converter', tier: 1 },
+  'json-to-toml': { query: 'json to toml converter', tier: 3 },
+  'toml-to-json': { query: 'toml to json converter', tier: 3 },
+  'json-to-csv': { query: 'json to csv converter', tier: 1 },
+  'csv-to-json': { query: 'csv to json converter', tier: 1 },
+  'json-formatter': { query: 'json formatter / json beautifier / json validator', tier: 1 },
+  'json-to-typescript': { query: 'json to typescript interface generator', tier: 1 },
+  'json-to-zod': { query: 'json to zod schema generator', tier: 2 },
+  'json-to-python': { query: 'json to python dataclass / typeddict', tier: 2 },
+  'json-to-go': { query: 'json to go struct generator', tier: 2 },
+  'json-to-sql': { query: 'json to sql insert / create table', tier: 2 },
+  'json-to-json-schema': { query: 'generate json schema from json', tier: 2 },
+  'jwt-decoder': { query: 'jwt decoder / decode jwt token', tier: 1 },
+  'base64-encoder-decoder': { query: 'base64 encode decode online', tier: 1 },
+  'url-encoder-decoder': { query: 'url encode decode / percent encoding', tier: 2 },
+  'curl-to-code': { query: 'convert curl to python / javascript / go', tier: 2 },
+  'hash-generator': { query: 'sha256 / md5 hash generator online', tier: 1 },
+  'unix-timestamp-converter': { query: 'unix timestamp converter / epoch converter', tier: 1 },
+  'uuid-generator': { query: 'uuid generator v4 online', tier: 2 },
+  'ulid-generator': { query: 'ulid generator online', tier: 3 },
+  'case-converter': { query: 'camelcase / snake_case converter', tier: 2 },
+  'regex-tester': { query: 'regex tester javascript online', tier: 2 },
+  'diff-checker': { query: 'text diff checker / compare two texts', tier: 2 },
 };

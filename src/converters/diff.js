@@ -133,7 +133,7 @@ export function diffToUnifiedText(left, right, options = {}) {
 export const DIFF_EXAMPLE = Object.freeze({
   left: [
     '{',
-    '  "name": "devconvert",',
+    '  "name": "formatport",',
     '  "version": "1.0.0",',
     '  "private": true,',
     '  "scripts": {',
@@ -143,7 +143,7 @@ export const DIFF_EXAMPLE = Object.freeze({
   ].join('\n'),
   right: [
     '{',
-    '  "name": "devconvert",',
+    '  "name": "formatport",',
     '  "version": "1.1.0",',
     '  "private": true,',
     '  "scripts": {',

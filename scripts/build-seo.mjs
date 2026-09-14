@@ -24,7 +24,7 @@ const root = join(here, '..');
 const { getTools, relatedTools, getCategories, categorySlugOf, defaultOptions } =
   await import('../src/tool-registry.js');
 const { PRODUCTION_ORIGIN, PRODUCT } = await import('../src/config.js');
-const { PAGE_CONTENT } = await import('./seo-content.mjs');
+const { PAGE_CONTENT, SEARCH_INTENT } = await import('./seo-content.mjs');
 
 /** Escape text for HTML text nodes and double-quoted attribute values. */
 function escapeHtml(value) {
@@ -46,7 +46,7 @@ const HEADER = `<header class="site-header">
   <div class="site-header__inner">
     <a class="brand" href="/">
       <span class="brand__mark" aria-hidden="true">⇄</span>
-      <span class="brand__name">DevConvert</span>
+      <span class="brand__name">FormatPort</span>
     </a>
 
     <button type="button" class="search-trigger" id="search-trigger" aria-haspopup="dialog">
@@ -221,7 +221,12 @@ function head({ title, description, canonical, extraLd = [] }) {
 <meta property="og:description" content="${escapeHtml(description)}">
 <meta property="og:url" content="${escapeHtml(canonical)}">
 <meta property="og:locale" content="en">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="${escapeHtml(PRODUCTION_ORIGIN)}/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${escapeHtml(PRODUCT.name)} — ${escapeHtml(PRODUCT.tagline)}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="${escapeHtml(PRODUCTION_ORIGIN)}/og.png">
 <meta name="twitter:title" content="${escapeHtml(title)}">
 <meta name="twitter:description" content="${escapeHtml(description)}">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%E2%87%84%3C/text%3E%3C/svg%3E">
@@ -315,7 +320,7 @@ function categoryPage(group, isIndex) {
     ? 'All Tools · ' + PRODUCT.name
     : group.title + ' · ' + PRODUCT.name;
   const description = isIndex
-    ? `All ${getTools().length} DevConvert tools, grouped by what they do. Converters, code generators, encoders, hashes, timestamps and text tools, all running in your browser.`
+    ? `All ${getTools().length} FormatPort tools, grouped by what they do. Converters, code generators, encoders, hashes, timestamps and text tools, all running in your browser.`
     : group.blurb;
 
   const trail = isIndex
@@ -350,7 +355,7 @@ ${items}
   const listLd = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: isIndex ? 'All DevConvert tools' : group.title,
+    name: isIndex ? 'All FormatPort tools' : group.title,
     itemListElement: groups
       .flatMap((entry) => entry.tools)
       .map((tool, index) => ({
@@ -381,7 +386,7 @@ ${staticToolNav(null)}
     ${breadcrumbHtml(trail)}
 
     <div class="app-root">
-      <h1>${escapeHtml(isIndex ? 'All DevConvert tools' : group.title)}</h1>
+      <h1>${escapeHtml(isIndex ? 'All FormatPort tools' : group.title)}</h1>
       <p>${escapeHtml(description)}</p>
 
       <div class="seo-body">
@@ -391,7 +396,7 @@ ${sections}
       <ul>
 ${otherCategories}
       </ul>
-      <p><a href="/">DevConvert home</a></p>
+      <p><a href="/">FormatPort home</a></p>
       </div>
     </div>
   </main>
@@ -427,7 +432,7 @@ ${HEADER}
   <main id="workspace" class="workspace">
     <div class="app-root">
       <h1>Page not found</h1>
-      <p>That URL does not match any DevConvert tool.</p>
+      <p>That URL does not match any FormatPort tool.</p>
       <div class="seo-body">
       <h2>Where to go instead</h2>
       <ul>
@@ -454,7 +459,7 @@ ${FOOTER}
  * Sample data inside page copy is left alone.
  */
 const ABSOLUTE_URL_FIELD =
-  /(<link rel="canonical" href="|<meta property="og:url" content="|"url": ")https?:\/\/[^"\/]+/g;
+  /(<link rel="canonical" href="|<meta property="og:url" content="|<meta property="og:image" content="|<meta name="twitter:image" content="|"url": ")https?:\/\/[^"\/]+/g;
 
 function retargetOrigin(html) {
   return html.replace(ABSOLUTE_URL_FIELD, (match, field) => field + PRODUCTION_ORIGIN);
@@ -490,14 +495,123 @@ ${urls
 }
 
 function robots() {
-  return `# DevConvert
+  return `# FormatPort — ${PRODUCTION_ORIGIN}
 User-agent: *
 Allow: /
 
-# The test harness is for developers, not for search results.
-Disallow: /tests/
+# /tests/ is deliberately NOT disallowed here. It carries
+# <meta name="robots" content="noindex, nofollow"> and an X-Robots-Tag header,
+# and a crawler has to be allowed to fetch a page before it can read either.
+# Blocking it in robots.txt would have the opposite of the intended effect:
+# Google would keep the URL as an untitled entry it was never permitted to look
+# at. Letting it crawl and be told "noindex" is what actually keeps it out.
 
 Sitemap: ${PRODUCTION_ORIGIN}/sitemap.xml
+`;
+}
+
+/* ------------------------------------------------------------------ *
+ * Indexable-page inventory
+ * ------------------------------------------------------------------ */
+
+/**
+ * SEO_INDEX_INVENTORY.md is generated, not maintained by hand. A hand-written
+ * inventory is wrong the moment someone adds a tool and forgets it, which is
+ * exactly when an accurate one would have mattered. Because this is built from
+ * the same registry as the pages and the sitemap, the three cannot disagree.
+ *
+ * Every column is derived, not asserted:
+ *   Indexable      the page is generated with "index, follow" (all of them are)
+ *   In sitemap     the URL is in the list sitemap() builds
+ *   Canonical      the self-referencing canonical the page is written with
+ *   Linked from    every tool is in the static tool-nav on every page, so a
+ *                  crawler reaches all of them one hop from the homepage
+ */
+function inventoryDoc(tools, sitemapUrls) {
+  const inSitemap = new Set(sitemapUrls);
+  const date = new Date().toISOString().slice(0, 10);
+
+  const row = (url, type, intent, linkedFrom) =>
+    `| \`${url.replace(PRODUCTION_ORIGIN, '')}\` | ${type} | ${intent} | yes | ${
+      inSitemap.has(url) ? 'yes' : '**NO**'
+    } | self | ${linkedFrom} |`;
+
+  const rows = [
+    row(PRODUCTION_ORIGIN + '/', 'Home', 'brand + "online developer converter tools"', 'root'),
+    row(PRODUCTION_ORIGIN + '/tools/', 'Tool index', 'browse — "developer tools list"', 'header, footer, every page'),
+    ...getCategories().map((group) =>
+      row(
+        PRODUCTION_ORIGIN + '/tools/' + group.slug + '/',
+        'Category',
+        group.category.toLowerCase().replace(/ tools$/, '') + ' tools',
+        'tool-nav heading on every page',
+      ),
+    ),
+    ...tools.map((tool) => {
+      const intent = SEARCH_INTENT[tool.id];
+      return row(
+        PRODUCTION_ORIGIN + '/' + tool.slug + '/',
+        'Tool (tier ' + (intent?.tier ?? '?') + ')',
+        intent?.query ?? tool.description,
+        'tool-nav on every page, related-tools blocks',
+      );
+    }),
+    row(PRODUCTION_ORIGIN + '/privacy', 'Legal', 'n/a — not a target', 'footer'),
+    row(PRODUCTION_ORIGIN + '/terms', 'Legal', 'n/a — not a target', 'footer'),
+  ].join('\n');
+
+  const tier1 = tools
+    .filter((tool) => SEARCH_INTENT[tool.id]?.tier === 1)
+    .map((tool) => `- \`${PRODUCTION_ORIGIN}/${tool.slug}/\` — ${SEARCH_INTENT[tool.id].query}`)
+    .join('\n');
+
+  const excluded = [
+    ['`/tests/`', 'Developer test harness. `noindex, nofollow` in the HTML and an `X-Robots-Tag` header. Crawlable on purpose — a blocked page can never be told it is noindex.'],
+    ['`/scripts/*`', 'Build tooling, served only because the host serves the repository as-is. `X-Robots-Tag: noindex`.'],
+    ['`/src/*`, `/styles/*`, `/vendor/*`', 'Application code and assets. Not pages. Deliberately crawlable so Google can render the app.'],
+    ['`/404.html`', 'Error page, `noindex, follow`.'],
+  ]
+    .map(([url, why]) => `| ${url} | ${why} |`)
+    .join('\n');
+
+  return `# Indexable-page inventory
+
+Generated by \`scripts/build-seo.mjs\` on ${date} — **do not edit by hand.**
+Add a tool to \`src/tool-registry.js\`, give it an entry in \`SEARCH_INTENT\` in
+\`scripts/seo-content.mjs\`, re-run the build, and this file, the landing page,
+the sitemap and the internal links all move together.
+
+**${tools.length} tools · ${getCategories().length} categories · ${sitemapUrls.length} indexable URLs.**
+
+Every page below is generated with \`index, follow\`, carries a self-referencing
+canonical, and is reachable from the homepage in one click, because the static
+tool navigation listing all ${tools.length} tools is rendered into every page before
+JavaScript runs.
+
+## Pages we expect to be indexed
+
+| URL | Page type | Primary search intent | Indexable? | In sitemap? | Canonical | Linked internally from |
+| --- | --- | --- | --- | --- | --- | --- |
+${rows}
+
+## Deliberately not indexed
+
+| URL | Why |
+| --- | --- |
+${excluded}
+
+## Tier 1 — request indexing for these first
+
+The homepage plus the tool pages whose query has both obvious intent and real
+volume. These are the ones worth spending Search Console's manual "Request
+indexing" quota on; see \`SEARCH_ENGINE_SETUP.md\`.
+
+- \`${PRODUCTION_ORIGIN}/\` — brand and category entry point
+${tier1}
+
+Tiers are editorial guesses made before any traffic existed. Replace them with
+what Search Console actually reports; the method for that is in
+\`SEO_MONITORING.md\`.
 `;
 }
 
@@ -540,9 +654,15 @@ for (const page of ['index.html', 'privacy.html', 'terms.html']) {
 }
 
 await writeFile(join(root, '404.html'), notFoundPage(), 'utf8');
-await writeFile(join(root, 'sitemap.xml'), sitemap(tools), 'utf8');
+
+const sitemapXml = sitemap(tools);
+await writeFile(join(root, 'sitemap.xml'), sitemapXml, 'utf8');
 await writeFile(join(root, 'robots.txt'), robots(), 'utf8');
 written.push('404.html', 'sitemap.xml', 'robots.txt');
+
+const sitemapUrls = [...sitemapXml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+await writeFile(join(root, 'SEO_INDEX_INVENTORY.md'), inventoryDoc(tools, sitemapUrls), 'utf8');
+written.push('SEO_INDEX_INVENTORY.md');
 
 console.log('Origin: ' + PRODUCTION_ORIGIN);
 console.log('Wrote ' + written.length + ' files.');

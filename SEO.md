@@ -1,6 +1,6 @@
 # Search architecture
 
-How DevConvert is meant to be found, what is already in place, and what is left.
+How FormatPort is meant to be found, what is already in place, and what is left.
 Distribution beyond search lives in [SEO_LAUNCH.md](SEO_LAUNCH.md).
 
 Everything here is generated from one source: `src/tool-registry.js`. Adding a
@@ -126,47 +126,37 @@ Results Test after deploying.
 
 ---
 
-## Search Console and Bing setup
+## Search Console, Bing and IndexNow
 
-Nothing here can be completed from the repository alone; each step needs
-account access.
+Moved. These steps need account and DNS access, so they live in one place with
+the exact values and the owner checklist:
 
-1. **Add the property.** Search Console → Add property → Domain (needs a DNS
-   TXT record) or URL prefix (accepts an HTML meta tag).
-2. **Verify.** For the meta-tag method, put the tag in the `<head>` of
-   `index.html` **and** in the `head()` function in `scripts/build-seo.mjs`, then
-   re-run the builder so every page carries it. For the DNS method nothing in
-   this repository changes. No token is committed here — there is none to
-   commit.
-3. **Submit the sitemap.** Sitemaps → add `sitemap.xml`. Confirm it reports 34
-   discovered URLs and no errors.
-4. **Inspect key URLs.** Run URL Inspection on `/`, `/csv-to-json/`,
-   `/json-to-yaml/`, `/jwt-decoder/` and `/tools/`. Check that the rendered HTML
-   contains the h1 and the behaviour notes, and request indexing for each.
-5. **Bing Webmaster Tools.** Add the site, import from Search Console if
-   available, submit the same sitemap. Bing feeds DuckDuckGo and Ecosia too.
+- **`SEARCH_ENGINE_SETUP.md`** — Google Search Console (domain property, TXT
+  verification, sitemap submission, URL inspection), Bing Webmaster Tools
+  (including importing from Search Console), IndexNow, and the `www` redirect
+  that has to be fixed first.
+- **`SEO_INDEX_INVENTORY.md`** — generated on every build: every URL we expect
+  indexed, its search intent, and which pages are deliberately excluded.
 
-### What to watch, and when
+No verification token is committed in this repository. There is none to commit:
+Google issues it to the account at verification time.
 
-| Metric | Where | What it tells you |
-| --- | --- | --- |
-| Pages indexed vs discovered | Indexing → Pages | Whether Google thinks the pages are worth keeping |
-| Impressions per page | Performance → Pages | Which tools are being surfaced at all |
-| Queries per page | Performance → Queries, filtered by page | Whether you match the intent you aimed at |
-| CTR per query | Performance | A title/description problem, not a ranking problem |
-| Average position | Performance | Movement over months, not days |
-| Core Web Vitals | Experience | Field data; only appears once there is traffic |
+---
 
-**How to read it.** High impressions with low CTR means the title and
-description are wrong — that is a one-line fix in the registry. Impressions for
-a query the page does not actually serve means the content and the intent have
-drifted apart. Indexed but zero impressions after a few months means the page
-is not competitive for anything, and the answer is a better page, not another
-page.
+## Measuring it
+
+Moved to **`SEO_MONITORING.md`**, which carries the metric definitions and a
+decision system for turning a Search Console report into one concrete change:
+what to do about high impressions on page 2, about low CTR in the top 10, about
+a good position nobody searches for, and about queries with no tool behind them.
+
+The starting point everything is compared against is **`SEO_BASELINE.md`**,
+recorded 2026-09-14 before the site was submitted anywhere.
 
 There is no analytics in the app and none is proposed: `connect-src 'none'` in
-`_headers` forbids it, and that restriction is the product's main claim. Search
-Console is the measurement layer.
+`_headers` forbids it, and that restriction is the product's main claim. Traffic
+is counted at the Cloudflare edge instead (see `DEPLOY.md`), and Search Console
+is the measurement layer for search itself.
 
 ---
 

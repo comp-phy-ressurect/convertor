@@ -1,8 +1,12 @@
-# DevConvert
+# FormatPort — https://formatport.com
 User-agent: *
 Allow: /
 
-# The test harness is for developers, not for search results.
-Disallow: /tests/
+# /tests/ is deliberately NOT disallowed here. It carries
+# <meta name="robots" content="noindex, nofollow"> and an X-Robots-Tag header,
+# and a crawler has to be allowed to fetch a page before it can read either.
+# Blocking it in robots.txt would have the opposite of the intended effect:
+# Google would keep the URL as an untitled entry it was never permitted to look
+# at. Letting it crawl and be told "noindex" is what actually keeps it out.
 
 Sitemap: https://formatport.com/sitemap.xml

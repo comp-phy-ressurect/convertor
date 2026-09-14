@@ -995,7 +995,7 @@ function wireGlobalControls() {
     state.settings = storage.getSettings();
     applyTheme(state.settings.theme);
     refreshSettings();
-    ui.showToast(dom.toast, 'All locally stored DevConvert data was deleted.');
+    ui.showToast(dom.toast, 'All locally stored FormatPort data was deleted.');
   });
 }
 
@@ -1191,4 +1191,4 @@ if (document.readyState === 'loading') {
 }
 
 // Exposed for the browser test harness only; nothing here reads user input.
-globalThis.DevConvert = { getTools, state };
+globalThis.FormatPort = { getTools, state };

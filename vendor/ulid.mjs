@@ -1,4 +1,4 @@
-/* DevConvert local patch: detectPrng() resolves Web Crypto via globalThis/self
+/* FormatPort local patch: detectPrng() resolves Web Crypto via globalThis/self
    instead of window only, so ULID generation also works inside Web Workers and
    non-window ESM hosts. Restore the stock file from
    https://cdn.jsdelivr.net/npm/ulid@2.3.0/+esm if you need to undo this. */

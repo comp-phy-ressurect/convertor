@@ -1,6 +1,6 @@
 # Deploying formatport.com
 
-DevConvert ships as static files. There is no build step for the application
+FormatPort ships as static files. There is no build step for the application
 itself — only `scripts/build-seo.mjs`, which rewrites the crawlable HTML shells
 and the sitemap from `src/config.js`.
 
@@ -79,7 +79,35 @@ route to numbers is a browser script, which would mean editing `_headers` and
 rewriting the privacy page. Treat that as a product decision, not a deployment
 detail.
 
-## 4. After the domain resolves
+## 4. Telling search engines
+
+Two mechanisms, and they cover different engines.
+
+**Google: sitemap + Search Console.** Google does not participate in IndexNow.
+It is covered by `sitemap.xml` and a verified Search Console property — the
+exact steps, including the DNS TXT record, are in `SEARCH_ENGINE_SETUP.md`.
+
+**Everyone else: IndexNow.** Bing, Yandex, Seznam, Naver and Yep accept a push
+notification instead of waiting for a crawl. `.github/workflows/indexnow.yml`
+runs on the same push that deploys, waits for the new files to be live, and
+submits only the pages that push actually changed.
+
+Run it by hand after a restructure, or once after the first deploy to seed the
+engines with everything:
+
+```bash
+node scripts/indexnow.mjs --all
+node scripts/indexnow.mjs --changed HEAD~1
+node scripts/indexnow.mjs --all --dry-run
+```
+
+The key is published at `/<key>.txt` and is public by protocol — there is no
+secret to configure. A failed submission warns and exits 0 on purpose: the site
+is already live and in the sitemap, so a missed ping costs latency, not
+correctness, and is not worth failing a deploy over. Use `--strict` when you
+want the non-zero exit.
+
+## 5. After the domain resolves
 
 - [ ] `curl -sI https://formatport.com/ | grep -i content-security-policy` shows `connect-src 'none'`.
 - [ ] `https://formatport.com/sitemap.xml` loads and lists `formatport.com` URLs.
@@ -88,3 +116,6 @@ detail.
 - [ ] `/tests/` passes in a browser on the deployed site.
 - [ ] Submit the sitemap in Google Search Console.
 - [ ] Web Analytics is enabled and recording — check it a day after launch.
+- [ ] `curl -sSI https://www.formatport.com/` returns **301** to the apex, not 522.
+- [ ] `https://formatport.com/og.png` returns 200 — social previews depend on it.
+- [ ] `https://formatport.com/<key>.txt` serves the IndexNow key.

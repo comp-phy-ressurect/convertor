@@ -1,6 +1,6 @@
 # Third-Party Notices
 
-DevConvert bundles the following third-party libraries. Each is vendored under `/vendor` as a version-pinned ESM bundle and imported only through `src/vendor.js`. No dependency is fetched from a CDN at runtime.
+FormatPort bundles the following third-party libraries. Each is vendored under `/vendor` as a version-pinned ESM bundle and imported only through `src/vendor.js`. No dependency is fetched from a CDN at runtime.
 
 The vendored files are minified redistributions (bundled by jsDelivr) and **do not carry an embedded license header**. The copyright lines reproduced below were taken from each project's upstream `LICENSE` file at the version indicated, and the upstream repository URL is given in every section so the text can be verified. Confirm each notice against its upstream source before publishing a production deployment.
 
@@ -14,7 +14,7 @@ Contents:
 6. [js-md5 0.8.3 — MIT](#6-js-md5-083)
 7. [Modifications to vendored files](#modifications-to-vendored-files)
 
-DevConvert also uses the Web Crypto API (`crypto.subtle.digest`, `crypto.getRandomValues`, `crypto.randomUUID`) for SHA-1/SHA-256/SHA-384/SHA-512 digests, UUID v4 generation and random number generation. Web Crypto is a browser platform API, not a bundled dependency, and carries no license obligation.
+FormatPort also uses the Web Crypto API (`crypto.subtle.digest`, `crypto.getRandomValues`, `crypto.randomUUID`) for SHA-1/SHA-256/SHA-384/SHA-512 digests, UUID v4 generation and random number generation. Web Crypto is a browser platform API, not a bundled dependency, and carries no license obligation.
 
 ---
 
@@ -207,7 +207,7 @@ SOFTWARE.
 - **Vendored as:** `vendor/js-md5.mjs`
 - **License:** MIT
 - **Project URL:** https://github.com/emn178/js-md5
-- **Used for:** MD5 digests. MD5 is offered as a legacy checksum only and is not used for any security purpose in DevConvert. All cryptographic hashing (SHA-256/384/512, SHA-1) uses the native Web Crypto API instead.
+- **Used for:** MD5 digests. MD5 is offered as a legacy checksum only and is not used for any security purpose in FormatPort. All cryptographic hashing (SHA-256/384/512, SHA-1) uses the native Web Crypto API instead.
 
 ```
 MIT License
@@ -244,13 +244,13 @@ Both the MIT and BSD-3-Clause licenses permit modification, and it is standard p
 The file carries this notice at the top:
 
 ```
-/* DevConvert local patch: detectPrng() resolves Web Crypto via globalThis/self
+/* FormatPort local patch: detectPrng() resolves Web Crypto via globalThis/self
    instead of window only, so ULID generation also works inside Web Workers and
    non-window ESM hosts. Restore the stock file from
    https://cdn.jsdelivr.net/npm/ulid@2.3.0/+esm if you need to undo this. */
 ```
 
-**The change.** Upstream ulid 2.3.0 detects a source of randomness by looking for `window.crypto` (or `window.msCrypto`) and, when no `window` object exists, falling back to a CommonJS `require('crypto')`. Neither path works in this application: an ES module in a browser has no CommonJS `require`, and code running inside a Web Worker has `self` but no `window`. The patch changes the root-object lookup to try `globalThis` first, then `self`, before reading `.crypto` from it, so the Web Crypto API is found in every context DevConvert runs in. No other behaviour, algorithm or output format was altered.
+**The change.** Upstream ulid 2.3.0 detects a source of randomness by looking for `window.crypto` (or `window.msCrypto`) and, when no `window` object exists, falling back to a CommonJS `require('crypto')`. Neither path works in this application: an ES module in a browser has no CommonJS `require`, and code running inside a Web Worker has `self` but no `window`. The patch changes the root-object lookup to try `globalThis` first, then `self`, before reading `.crypto` from it, so the Web Crypto API is found in every context FormatPort runs in. No other behaviour, algorithm or output format was altered.
 
 **Restoring the stock file.** The unmodified upstream bundle is not kept in the repository. To diff against it, download `https://cdn.jsdelivr.net/npm/ulid@2.3.0/+esm` — that is the exact artifact this file was vendored from.
 

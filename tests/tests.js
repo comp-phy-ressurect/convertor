@@ -1,5 +1,5 @@
 /**
- * tests.js — zero-dependency test suite for DevConvert.
+ * tests.js — zero-dependency test suite for FormatPort.
  *
  * These tests exercise the PURE converter and detector functions. There is no
  * DOM assertion here on purpose: the converters know nothing about the DOM, so
@@ -186,11 +186,11 @@ test('Invalid YAML reports a line number instead of throwing raw', 'Structured d
  * ================================================================== */
 
 test('JSON to TOML round trips through the TOML parser', 'Structured data', () => {
-  const { output } = jsonToToml('{"title":"DevConvert","owner":{"name":"Ada"},"ports":[80,443]}');
+  const { output } = jsonToToml('{"title":"FormatPort","owner":{"name":"Ada"},"ports":[80,443]}');
   // TOML must emit scalars before tables, so key order legitimately differs
   // from the JSON input. Compare key by key rather than as one JSON string.
   const parsed = TOML.parse(output);
-  assert.equal(parsed.title, 'DevConvert');
+  assert.equal(parsed.title, 'FormatPort');
   assert.deepEqual(parsed.ports, [80, 443]);
   assert.deepEqual(parsed.owner, { name: 'Ada' });
 });

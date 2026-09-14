@@ -253,7 +253,7 @@ function serializeHtmlTable(value, options) {
 /**
  * Escape for HTML text content.
  *
- * This output is TEXT the user copies elsewhere — DevConvert never injects it
+ * This output is TEXT the user copies elsewhere — FormatPort never injects it
  * into its own DOM (see ui.js, which is textContent-only). Escaping it properly
  * still matters, because the user will paste it into a real page.
  */
