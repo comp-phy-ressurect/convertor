@@ -33,10 +33,19 @@ once the property is verified. That is the authoritative source, and it will be
 available within days of the setup in `SEARCH_ENGINE_SETUP.md`. Note the count
 there on the day the property is verified, and add it below.
 
+**Property verified 2026-09-14** by DNS TXT record, same day this baseline was
+taken. Sitemap submitted and accepted the same day: status *Success*, **34
+discovered URLs** — matching `SEO_INDEX_INVENTORY.md` exactly.
+
 ```
-Indexed pages on the day the property was verified: ____  (fill in)
-Date verified: ____
+Indexed pages on the day the property was verified: 0 (property created same day;
+                                                      Indexing > Pages had no data yet)
+Date verified: 2026-09-14
+Sitemap submitted: 2026-09-14, 34 URLs discovered, no errors
 ```
+
+The first meaningful indexed count will appear in **Indexing → Pages** a few days
+after this date. Record it here when it does.
 
 ### What this baseline means
 
@@ -107,11 +116,13 @@ Audited live on 2026-09-14 against `https://formatport.com/`.
 | Homepage TTFB / size | 170 ms / 11.4 KB |
 | TLS | valid; apex and wildcard both covered |
 | `http://` → `https://` apex | 301, **one hop** |
-| `www.formatport.com` | **HTTP 522 — broken.** See `SEARCH_ENGINE_SETUP.md` §0 |
+| `www.formatport.com` | **Was HTTP 522 — fixed 2026-09-14.** All four host/scheme variants now 301 to the apex in one hop, path and query preserved. |
 
 Every row except the last was already correct before this work started. The
-`www` failure is the one real defect, and it needs a Cloudflare dashboard
-change that cannot be made from the repository.
+`www` failure was the one real defect; it was fixed on 2026-09-14 with a
+Cloudflare Redirect Rule (`www to apex (301)`, matching `http.host eq
+"www.formatport.com"`), which runs at the edge before any origin fetch and so
+sidesteps the unreachable origin behind the proxied `www` CNAME entirely.
 
 ---
 
@@ -125,7 +136,7 @@ change that cannot be made from the repository.
 | Product Hunt | Not posted |
 | Reddit / dev communities | Not posted |
 | Directories | Not submitted anywhere |
-| Search Console | Property not yet added |
+| Search Console | **Domain property verified 2026-09-14**, sitemap submitted, 34 URLs discovered |
 | Bing Webmaster Tools | Site not yet added |
 | IndexNow | Key published in this commit; nothing submitted yet |
 
