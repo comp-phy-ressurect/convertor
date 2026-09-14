@@ -38,13 +38,23 @@ taken. Sitemap submitted and accepted the same day: status *Success*, **34
 discovered URLs** — matching `SEO_INDEX_INVENTORY.md` exactly.
 
 ```
-Indexed pages on the day the property was verified: 0 (property created same day;
-                                                      Indexing > Pages had no data yet)
-Date verified: 2026-09-14
+Date verified:     2026-09-14
 Sitemap submitted: 2026-09-14, 34 URLs discovered, no errors
+Indexed at baseline: 1 of 34 — the homepage only
 ```
 
-The first meaningful indexed count will appear in **Indexing → Pages** a few days
+**Correction to the "nothing is indexed" assumption above.** URL Inspection on
+2026-09-14 reported `https://formatport.com/` as **already on Google** ("Stránka
+je indexována"). Google had found and indexed the homepage on its own, before
+the property existed — which the `site:` query could not reveal and which the
+brand-query results did not suggest. Every other URL inspected came back either
+*Google adresu URL nezná* or *Objeveno – momentálně neindexováno*.
+
+So the true starting point is **1 indexed page, not 0.** Worth keeping in mind:
+the indexed homepage was the DevConvert version, so the first thing to watch is
+whether the FormatPort title replaces it.
+
+The first full indexed count will appear in **Indexing → Pages** a few days
 after this date. Record it here when it does.
 
 ### What this baseline means
@@ -131,14 +141,14 @@ sidesteps the unreachable origin behind the proxied `www` CNAME entirely.
 | Channel | State on 2026-09-14 |
 | --- | --- |
 | Backlinks | None known. Nothing has been posted anywhere. |
-| GitHub repository | Public — `comp-phy-ressurect/convertor`, **0 stars**, homepage field already set to `https://formatport.com` |
+| GitHub repository | Public — `comp-phy-ressurect/convertor`, **0 stars**. Description, homepage and 15 topics updated to FormatPort on 2026-09-14. |
 | Show HN | Not posted |
 | Product Hunt | Not posted |
 | Reddit / dev communities | Not posted |
 | Directories | Not submitted anywhere |
-| Search Console | **Domain property verified 2026-09-14**, sitemap submitted, 34 URLs discovered |
-| Bing Webmaster Tools | Site not yet added |
-| IndexNow | Key published in this commit; nothing submitted yet |
+| Search Console | **Domain property verified 2026-09-14**, sitemap submitted, 34 URLs discovered, indexing requested for 10 tier-1 URLs |
+| Bing Webmaster Tools | **Not added — blocked on owner.** Requires a Microsoft account sign-in. |
+| IndexNow | Key live; all 34 URLs submitted 2026-09-14, accepted (HTTP 200) |
 
 Launch material for all of these is written and ready in `LAUNCH.md`. None of
 it has been published — no account was created and nothing was posted on the
