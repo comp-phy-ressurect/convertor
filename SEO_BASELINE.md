@@ -181,3 +181,102 @@ not rank for `json formatter` or `csv to json` in 90 days. What *should* happen
 in 90 days is that the pages are indexed, brand search resolves to the site,
 and long-tail queries begin producing impressions. Judge the work against that,
 not against the headline keywords.
+
+---
+
+# First measurement — 2026-09-19
+
+Five days after the baseline. Search Console has data for 13–16 September; the
+numbers below are its 28-day window, which is the whole life of the property.
+
+## Where the numbers stood
+
+| | 2026-09-14 | 2026-09-19 |
+|---|---|---|
+| Indexed | 1 of 34 | **15** |
+| Not indexed | 33 | 22 |
+| Clicks | 0 | 1 |
+| Impressions | 0 | 15 |
+| Average position | — | 17.6 |
+
+Sitemap: submitted 14 Sep, last read 17 Sep, Success, 34 URLs discovered.
+
+Not-indexed reasons — all three of them, with nothing else present:
+
+| Reason | Pages |
+|---|---|
+| Page with redirect | 2 |
+| Discovered, currently not indexed | 11 |
+| Crawled, currently not indexed | 9 |
+
+No `noindex`, no robots block, no soft 404, no server error, no duplicate
+canonical. The two redirects are `http://formatport.com/` and the `www` host;
+both 301 to the apex, verified with `curl`, and need nothing.
+
+Queries above the anonymisation threshold — only two exist:
+
+| Query | Impressions | Position |
+|---|---|---|
+| `yaml to json` | 2 | 43.5 |
+| `iso 8601 to unix timestamp` | 1 | 63.0 |
+
+Pages, top of the list:
+
+| Page | Clicks | Impressions | Position |
+|---|---|---|---|
+| `/yaml-to-json/` | 1 | 8 | 15.2 |
+| `/unix-timestamp-converter/` | 0 | 7 | 16.0 |
+| `/` | 0 | 6 | 2.5 |
+| `/json-formatter/` | 0 | 6 | 4.0 |
+| `/json-to-yaml/` | 0 | 6 | 6.2 |
+| `/jwt-decoder/` | 0 | 5 | 4.2 |
+| `/base64-encoder-decoder/` | 0 | 5 | 7.6 |
+| `/privacy` | 0 | 4 | 2.2 |
+| `/csv-to-json/` | 0 | 4 | 3.5 |
+| `/hash-generator/` | 0 | 3 | 2.7 |
+
+Read those two tables together. Page positions of 2–8 next to query positions
+of 43 and 63 means the good positions come from the anonymised brand queries.
+On a real generic converter query the site sits at 40–60. That is the honest
+picture at five days, and it is roughly what the baseline predicted.
+
+## What the data turned out to be hiding
+
+`/privacy` at position 2.2 was the thread worth pulling. It ranks, which means
+its content is indexed, which means the "this is a template, not legal advice"
+banner was one snippet away from being the first thing a visitor read.
+
+Checking what Google actually renders turned up the larger problem. `app.js`
+clears `#app` on boot, and every tool page kept its supporting content inside
+`#app`. Measured in the browser, before and after the fix:
+
+| | Rendered words in `<main>` |
+|---|---|
+| Any tool page, before | 91 |
+| `/json-to-yaml/`, after | 510 |
+| `/`, before | 91 |
+| `/`, after | 293 |
+
+Ninety-one words, near-identical across all 25 pages, is what the nine
+"crawled, currently not indexed" pages were being judged on. The homepage was
+a separate problem: `renderHome()` selected `json-to-yaml`, which overwrote
+`document.title` and the `h1`, so `/` rendered as a copy of `/json-to-yaml/`,
+and four of the five category hubs lost their only rendered inbound link —
+which is why all five sit in "discovered, currently not indexed".
+
+Both are fixed, along with the thinness itself: the 25 tool pages now carry
+220–552 words each, written from the converters' own behaviour, where the
+median was 165. `tests/seo.mjs` fails if either regresses.
+
+## What to re-measure, and when
+
+The 30- and 90-day checks above still stand. Add to the 30-day one:
+
+- Have the nine "crawled, currently not indexed" pages moved into the index?
+  They are the direct test of the rendering fix: `/tools/text/`, `/terms`,
+  `/json-to-typescript/`, `/json-to-python/`, `/diff-checker/`, `/json-to-zod/`,
+  `/regex-tester/`, `/toml-to-json/`, `/ulid-generator/`.
+- Have the five category hubs been crawled at all? They had no rendered inbound
+  link until 19 September.
+- Does `/` still rank separately from `/json-to-yaml/`, and does its result now
+  show the homepage title rather than the converter's?

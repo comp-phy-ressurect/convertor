@@ -50,7 +50,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           # --changed diffs against the previous commit, which has to be present.
-          fetch-depth: 2
+          # Deep enough that `github.event.before` is always in the clone.
+          # With a shallow fetch, a push of more than one commit left the base
+          # commit missing and the run submitted nothing while reporting success.
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:

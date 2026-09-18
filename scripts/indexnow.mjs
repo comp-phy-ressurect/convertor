@@ -170,6 +170,17 @@ function pathToUrl(file) {
  * purpose: submitting a URL that now 404s is how IndexNow is told to drop it.
  */
 async function urlsFromGit(ref) {
+  // A shallow clone may not contain the base commit — a push of three commits
+  // into a checkout with fetch-depth 2 is enough. Submitting the whole sitemap
+  // is the right answer there: over-announcing a deploy costs nothing, whereas
+  // announcing nothing means the deploy is never picked up.
+  try {
+    await run('git', ['cat-file', '-e', ref + '^{commit}'], { cwd: root });
+  } catch {
+    warn('base commit ' + ref + ' is not in this clone; falling back to the full sitemap.');
+    return urlsFromSitemap();
+  }
+
   const { stdout } = await run('git', ['diff', '--name-only', '--diff-filter=AMDR', ref, 'HEAD'], {
     cwd: root,
   });
@@ -220,8 +231,25 @@ const dryRun = argv.includes('--dry-run');
 const strict = argv.includes('--strict');
 const rest = argv.filter((value) => value !== '--dry-run' && value !== '--strict');
 
+/**
+ * Say so where someone will actually see it.
+ *
+ * A green tick on a workflow that submitted nothing is worse than a red one:
+ * the deploy looks announced and is not. GitHub renders `::error::` as an
+ * annotation at the top of the run, which survives `continue-on-error`.
+ */
+function annotate(level, message) {
+  if (process.env.GITHUB_ACTIONS) console.log('::' + level + '::IndexNow: ' + message);
+}
+
+function warn(message) {
+  console.error('IndexNow: ' + message);
+  annotate('warning', message);
+}
+
 function fail(message) {
   console.error('IndexNow: ' + message);
+  annotate('error', message);
   process.exit(strict ? 1 : 0);
 }
 
