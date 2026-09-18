@@ -168,8 +168,16 @@
 
       <h1>Diff Checker</h1>
       <p>Compare two texts or two JSON documents line by line or word by word.</p>
+    </div>
 
-      <div class="seo-body">
+    <!--
+      These notes sit OUTSIDE #app deliberately. app.js clears #app when it
+      boots, so anything inside it is gone from the rendered DOM — which is the
+      DOM a search engine indexes, and the one a reader sees a second after the
+      page paints. Out here they survive the boot. app.js hides them if the
+      visitor navigates on to another tool, because they describe this page.
+    -->
+    <div class="seo-body" id="tool-notes" data-seo-tool="diff-checker">
       <p>Private by design. Your input never leaves this browser. Conversions run locally on your device.</p>
 
       <h2>What this tool handles</h2>
@@ -179,6 +187,68 @@
         <li>Whitespace-only and case-only differences can each be ignored.</li>
         <li>Additions and removals carry a glyph as well as a colour.</li>
       </ul>
+      <h2>Example</h2>
+      <div class="seo-example">
+        <div>
+          <h3>Original</h3>
+          <pre><code>jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - run: npm test
+</code></pre>
+        </div>
+        <div>
+          <h3>Changed</h3>
+          <pre><code>jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - run: npm ci
+      - run: npm test
+</code></pre>
+        </div>
+        <div>
+          <h3>Differences</h3>
+          <pre><code>===================================================================
+--- left
++++ right
+@@ -1,5 +1,6 @@
+ jobs:
+   build:
+-    runs-on: ubuntu-22.04
++    runs-on: ubuntu-24.04
+     steps:
++      - run: npm ci
+       - run: npm test</code></pre>
+        </div>
+      </div>
+      <h2>When you would use it</h2>
+      <ul class="seo-cases">
+        <li><strong>Reviewing a config change</strong> — Paste the running config beside the proposed one; the counts above the table — added, removed, unchanged — give you the size of the change before you read a line of it.</li>
+        <li><strong>Comparing two API responses</strong> — Staging and production often serialise the same object with the keys in a different order. JSON mode normalises that away, but element order inside an array is data and still shows as a change.</li>
+        <li><strong>Finding a whitespace-only edit</strong> — When a file reads as identical but the tooling insists it changed, compare with ignore-whitespace off to locate the reindented lines, then switch it on to confirm nothing else moved.</li>
+        <li><strong>Minified against formatted output</strong> — A minified bundle compared to its pretty-printed form is a single changed line in line mode and tells you nothing. JSON mode reduces the same pair to the values that genuinely differ.</li>
+      </ul>
+      <h2>Common questions</h2>
+      <div class="seo-faq">
+        <div class="seo-faq__item">
+          <h3>Does the diff ignore whitespace?</h3>
+          <p>Not unless you ask it to. With ignore-whitespace on, leading and trailing whitespace stops counting, but a change to spacing inside a line is still reported. Word mode keeps spacing inside its own tokens, so the option only affects line and JSON mode.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Will it show a CRLF versus LF difference?</h3>
+          <p>No. Both sides are normalised to \n before anything is compared, so a file converted from Windows to Unix line endings and nothing else reads as identical.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Can I apply the output as a patch?</h3>
+          <p>It is a standard unified diff with three lines of context, the same default as git diff, but the file headers are fixed as left and right — relabel them before handing it to git apply.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>What are the limits on size?</h3>
+          <p>A comparison stops after 5000 changed chunks and says it was truncated. Either side above 2 MiB is still accepted, with a warning that diffing and rendering will be slow.</p>
+        </div>
+      </div>
 
       <h2>Related tools</h2>
       <ul>
@@ -190,7 +260,6 @@
         <li><a href="/json-to-toml/">JSON → TOML</a> — Convert a JSON object to TOML.</li>
       </ul>
       <p><a href="/tools/">Browse all 25 tools</a></p>
-      </div>
     </div>
   </main>
 </div>

@@ -168,8 +168,16 @@
 
       <h1>JSON → Python</h1>
       <p>Generate Python dataclasses from a JSON sample.</p>
+    </div>
 
-      <div class="seo-body">
+    <!--
+      These notes sit OUTSIDE #app deliberately. app.js clears #app when it
+      boots, so anything inside it is gone from the rendered DOM — which is the
+      DOM a search engine indexes, and the one a reader sees a second after the
+      page paints. Out here they survive the boot. app.js hides them if the
+      visitor navigates on to another tool, because they describe this page.
+    -->
+    <div class="seo-body" id="tool-notes" data-seo-tool="json-to-python">
       <p>Private by design. Your input never leaves this browser. Conversions run locally on your device.</p>
 
       <h2>What this tool handles</h2>
@@ -198,6 +206,31 @@ class Root:
     manager: Optional[Any] = None</code></pre>
         </div>
       </div>
+      <h2>When you would use it</h2>
+      <ul class="seo-cases">
+        <li><strong>Writing a client for a REST endpoint</strong> — A captured response becomes @dataclass definitions to hang a hand-written client off, with each nested class defined above the class that refers to it.</li>
+        <li><strong>Modelling a webhook payload</strong> — One delivered body gives you the classes to type the handler signature with, instead of reading keys out of a dict and guessing which of them are always present.</li>
+        <li><strong>Moving a script off raw dictionaries</strong> — A script that indexes into data[&quot;items&quot;][0][&quot;id&quot;] can be lifted onto generated classes, so a renamed key becomes a type error rather than a KeyError at runtime.</li>
+      </ul>
+      <h2>Common questions</h2>
+      <div class="seo-faq">
+        <div class="seo-faq__item">
+          <h3>Can it emit TypedDict, Pydantic or attrs models?</h3>
+          <p>No, only standard-library @dataclass definitions with typing hints. Nothing is validated at runtime; the output is a typed container, not a parser.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Why are the attributes in a different order from the JSON?</h3>
+          <p>Optional and nullable fields are given a default of None, and Python requires defaulted fields to come last, so they are moved to the end of the class. Constructing an instance positionally therefore does not follow the original key order.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Are the original key names kept?</h3>
+          <p>Attribute names are converted to snake_case, so lastSeen becomes last_seen and HTTPStatus becomes http_status. No metadata mapping an attribute back to its JSON key is emitted, so a from_dict loader has to apply the rename itself.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>How are numbers typed?</h3>
+          <p>A whole number in the sample becomes int and a fractional one becomes float, so a price that happens to be 10 in your sample is typed int even though the endpoint can return 10.5. Only a position that held genuinely different types produces Union, as in Union[int, str].</p>
+        </div>
+      </div>
 
       <h2>Related tools</h2>
       <ul>
@@ -209,7 +242,6 @@ class Root:
         <li><a href="/convert/">Convert any format</a> — Pick an input format and an output format and convert between any pair.</li>
       </ul>
       <p><a href="/tools/">Browse all 25 tools</a></p>
-      </div>
     </div>
   </main>
 </div>

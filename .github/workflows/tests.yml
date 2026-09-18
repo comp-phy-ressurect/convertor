@@ -1,0 +1,48 @@
+name: Tests
+
+# Cloudflare Pages deploys whatever lands on main, with no build step, so this
+# is the only thing standing between a bad commit and production. It has to run
+# on the push itself, not just on pull requests.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The SEO checks read git commit dates for sitemap lastmod, and a
+          # shallow clone has none of them.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Converter and SEO tests
+        run: node tests/node.mjs
+
+      - name: The generated pages are in step with the registry
+        # tests/node.mjs already compares every page against what the generator
+        # would write. Running the generator here as well catches the other
+        # direction: a change that makes the build itself fail or write files
+        # nobody committed.
+        # sitemap.xml is excluded on purpose: its <lastmod> values follow commit
+        # dates, so they legitimately move between a local build and a CI run a
+        # day later. tests/node.mjs checks the sitemap's contents instead — that
+        # it lists exactly the indexable pages, on the right origin, with real
+        # dates — which is the part that can actually be wrong.
+        run: |
+          node scripts/build-seo.mjs
+          if ! git diff --quiet -- . ':(exclude)sitemap.xml'; then
+            echo "::error::Generated pages are out of date. Run: node scripts/build-seo.mjs"
+            git --no-pager diff --stat -- . ':(exclude)sitemap.xml'
+            exit 1
+          fi

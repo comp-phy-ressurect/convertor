@@ -168,8 +168,16 @@
 
       <h1>JSON → TypeScript</h1>
       <p>Generate TypeScript interfaces or types from a JSON sample.</p>
+    </div>
 
-      <div class="seo-body">
+    <!--
+      These notes sit OUTSIDE #app deliberately. app.js clears #app when it
+      boots, so anything inside it is gone from the rendered DOM — which is the
+      DOM a search engine indexes, and the one a reader sees a second after the
+      page paints. Out here they survive the boot. app.js hides them if the
+      visitor navigates on to another tool, because they describe this page.
+    -->
+    <div class="seo-body" id="tool-notes" data-seo-tool="json-to-typescript">
       <p>Private by design. Your input never leaves this browser. Conversions run locally on your device.</p>
 
       <h2>What this tool handles</h2>
@@ -199,6 +207,32 @@ export interface Root {
 }</code></pre>
         </div>
       </div>
+      <h2>When you would use it</h2>
+      <ul class="seo-cases">
+        <li><strong>Typing an untyped third-party API</strong> — Paste one real response from a service that ships no types and you get an interface tree to code against, instead of scattering any across the call site.</li>
+        <li><strong>Regenerating types after a schema change</strong> — When a response grows or loses a field, generate again from a fresh sample and diff the two files to see exactly what moved.</li>
+        <li><strong>Typing a captured test fixture</strong> — A payload saved as a fixture can be typed from itself, so the day the fixture drifts from the shape the test expects, the compiler says so.</li>
+        <li><strong>Naming the types in a nested payload</strong> — Array elements are named from the singular of their key, so users gives a User interface. A sample that is a top-level array gives an element interface plus an exported alias for the array.</li>
+      </ul>
+      <h2>Common questions</h2>
+      <div class="seo-faq">
+        <div class="seo-faq__item">
+          <h3>How does it decide a field is optional?</h3>
+          <p>Only by comparing records in an array: a key present in some elements and missing from others gets a question mark. A single object offers no such evidence, so every key comes out required.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>What happens with an array of mixed types?</h3>
+          <p>The element types are merged into a union and parenthesised, so [1, &quot;a&quot;, true] becomes (number | string | boolean)[]. An empty array has nothing to observe and becomes unknown[], or any[] if you switch the fallback.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>What type does a null field get?</h3>
+          <p>A key that is null in every record is typed null and nothing more, because the sample carries no other information about it. A key that is null in one record and a string in another comes out as string | null.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Can it tell a date string from an ordinary string?</h3>
+          <p>No. An ISO 8601 timestamp is typed string rather than Date, and whole numbers and decimals are both number, since TypeScript has no separate integer type.</p>
+        </div>
+      </div>
 
       <h2>Related tools</h2>
       <ul>
@@ -210,7 +244,6 @@ export interface Root {
         <li><a href="/convert/">Convert any format</a> — Pick an input format and an output format and convert between any pair.</li>
       </ul>
       <p><a href="/tools/">Browse all 25 tools</a></p>
-      </div>
     </div>
   </main>
 </div>

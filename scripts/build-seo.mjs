@@ -15,8 +15,9 @@
  */
 
 import { writeFile, mkdir, readFile } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '..');
@@ -150,16 +151,19 @@ function breadcrumbLd(trail) {
  * actually produces today. Anything that throws, or has no text output, simply
  * gets no example rather than a wrong one.
  */
-function renderExample(tool) {
+async function renderExample(tool) {
   const sample = PAGE_CONTENT[tool.id]?.sample;
   if (!sample || typeof tool.run !== 'function') return '';
 
   let output;
   try {
     const options = { ...defaultOptions(tool), ...(sample.options ?? {}) };
-    const result = tool.run({
+    // `run` is a promise for the tools that hash or run a regex off the main
+    // thread. Awaiting a plain value is harmless; not awaiting a promise meant
+    // `result.output` was undefined and the example was silently dropped.
+    const result = await tool.run({
       input: sample.input,
-      secondaryInput: '',
+      secondaryInput: sample.secondaryInput ?? '',
       options,
       formats: tool.formats,
     });
@@ -172,16 +176,20 @@ function renderExample(tool) {
 
   const inputLabel = tool.input?.label ?? 'Input';
   const outputLabel = tool.output?.label ?? 'Output';
+  const pane = (label, text) => `        <div>
+          <h3>${escapeHtml(label)}</h3>
+          <pre><code>${escapeHtml(text)}</code></pre>
+        </div>`;
+
+  const panes = [pane(inputLabel, sample.input)];
+  if (sample.secondaryInput) {
+    panes.push(pane(tool.secondaryInput?.label ?? 'Second input', sample.secondaryInput));
+  }
+  panes.push(pane(outputLabel, output.trimEnd()));
+
   return `      <h2>Example</h2>
       <div class="seo-example">
-        <div>
-          <h3>${escapeHtml(inputLabel)}</h3>
-          <pre><code>${escapeHtml(sample.input)}</code></pre>
-        </div>
-        <div>
-          <h3>${escapeHtml(outputLabel)}</h3>
-          <pre><code>${escapeHtml(output.trimEnd())}</code></pre>
-        </div>
+${panes.join('\n')}
       </div>
 `;
 }
@@ -194,6 +202,52 @@ function handlesHtml(tool) {
       <ul>
 ${items}
       </ul>
+`;
+}
+
+/**
+ * "When you would use it" — the concrete contexts a tool is reached for.
+ *
+ * This is editorial copy, so it lives in seo-content.mjs next to the `handles`
+ * bullets rather than in the registry: the registry describes the software, and
+ * a wrong sentence here must not be able to change how a converter behaves.
+ */
+function useCasesHtml(tool) {
+  const cases = PAGE_CONTENT[tool.id]?.useCases ?? [];
+  if (!cases.length) return '';
+  const items = cases
+    .map(
+      (entry) =>
+        `        <li><strong>${escapeHtml(entry.title)}</strong> — ${escapeHtml(entry.body)}</li>`,
+    )
+    .join('\n');
+  return `      <h2>When you would use it</h2>
+      <ul class="seo-cases">
+${items}
+      </ul>
+`;
+}
+
+/**
+ * The questions a developer actually arrives with. Deliberately NOT marked up
+ * as FAQPage JSON-LD: the answers are here because they are useful on the page,
+ * not to bid for a search feature Google no longer shows for sites like this.
+ */
+function faqHtml(tool) {
+  const faq = PAGE_CONTENT[tool.id]?.faq ?? [];
+  if (!faq.length) return '';
+  const items = faq
+    .map(
+      (entry) => `        <div class="seo-faq__item">
+          <h3>${escapeHtml(entry.q)}</h3>
+          <p>${escapeHtml(entry.a)}</p>
+        </div>`,
+    )
+    .join('\n');
+  return `      <h2>Common questions</h2>
+      <div class="seo-faq">
+${items}
+      </div>
 `;
 }
 
@@ -234,7 +288,7 @@ function head({ title, description, canonical, extraLd = [] }) {
 ${extraLd.map(jsonLd).join('\n')}`;
 }
 
-function toolPage(tool, dialogs) {
+async function toolPage(tool, dialogs) {
   const canonical = PRODUCTION_ORIGIN + '/' + tool.slug + '/';
   const title = (tool.seoTitle ?? tool.label) + ' · ' + PRODUCT.name;
   const description = tool.metaDescription ?? tool.description;
@@ -283,17 +337,24 @@ ${staticToolNav(tool.slug)}
 
       <h1>${escapeHtml(tool.label)}</h1>
       <p>${escapeHtml(tool.description)}</p>
+    </div>
 
-      <div class="seo-body">
+    <!--
+      These notes sit OUTSIDE #app deliberately. app.js clears #app when it
+      boots, so anything inside it is gone from the rendered DOM — which is the
+      DOM a search engine indexes, and the one a reader sees a second after the
+      page paints. Out here they survive the boot. app.js hides them if the
+      visitor navigates on to another tool, because they describe this page.
+    -->
+    <div class="seo-body" id="tool-notes" data-seo-tool="${escapeHtml(tool.slug)}">
       <p>${escapeHtml(PRODUCT.privacyStatement)}</p>
 
-${handlesHtml(tool)}${renderExample(tool)}
+${handlesHtml(tool)}${await renderExample(tool)}${useCasesHtml(tool)}${faqHtml(tool)}
       <h2>Related tools</h2>
       <ul>
 ${related}
       </ul>
       <p><a href="/tools/">Browse all ${getTools().length} tools</a></p>
-      </div>
     </div>
   </main>
 </div>
@@ -465,8 +526,7 @@ function retargetOrigin(html) {
   return html.replace(ABSOLUTE_URL_FIELD, (match, field) => field + PRODUCTION_ORIGIN);
 }
 
-function sitemap(tools) {
-  const today = new Date().toISOString().slice(0, 10);
+function sitemap(tools, lastmod = new Map()) {
   const urls = [
     { loc: PRODUCTION_ORIGIN + '/', priority: '1.0' },
     { loc: PRODUCTION_ORIGIN + '/tools/', priority: '0.9' },
@@ -485,7 +545,7 @@ ${urls
   .map(
     (url) => `  <url>
     <loc>${escapeHtml(url.loc)}</loc>
-    <lastmod>${today}</lastmod>
+    <lastmod>${lastmod.get(url.loc) ?? TODAY}</lastmod>
     <priority>${url.priority}</priority>
   </url>`,
   )
@@ -619,53 +679,151 @@ what Search Console actually reports; the method for that is in
  * Run
  * ------------------------------------------------------------------ */
 
-const tools = getTools();
-const dialogs = await dialogsMarkup();
-const written = [];
+const TODAY = new Date().toISOString().slice(0, 10);
 
-for (const tool of tools) {
-  const directory = join(root, tool.slug);
-  await mkdir(directory, { recursive: true });
-  await writeFile(join(directory, 'index.html'), toolPage(tool, dialogs), 'utf8');
-  written.push(tool.slug + '/index.html');
-}
-
-// /tools/ and /tools/<category>/
-await mkdir(join(root, 'tools'), { recursive: true });
-await writeFile(join(root, 'tools', 'index.html'), categoryPage(null, true), 'utf8');
-written.push('tools/index.html');
-
-for (const group of getCategories()) {
-  const directory = join(root, 'tools', group.slug);
-  await mkdir(directory, { recursive: true });
-  await writeFile(join(directory, 'index.html'), categoryPage(group, false), 'utf8');
-  written.push('tools/' + group.slug + '/index.html');
-}
-
-// Hand-written pages: keep their absolute URLs pointed at PRODUCTION_ORIGIN.
-for (const page of ['index.html', 'privacy.html', 'terms.html']) {
-  const file = join(root, page);
-  const before = await readFile(file, 'utf8');
-  const after = retargetOrigin(before);
-  if (after !== before) {
-    await writeFile(file, after, 'utf8');
-    written.push(page);
+/**
+ * The date git last committed a change to this file, or null when git cannot
+ * say (no repository, a shallow clone, a file git has never seen).
+ */
+function gitLastModified(relativePath) {
+  try {
+    const out = execFileSync('git', ['log', '-1', '--format=%cs', '--', relativePath], {
+      cwd: root,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim();
+    return /^\d{4}-\d{2}-\d{2}$/.test(out) ? out : null;
+  } catch {
+    return null;
   }
 }
 
-await writeFile(join(root, '404.html'), notFoundPage(), 'utf8');
-
-const sitemapXml = sitemap(tools);
-await writeFile(join(root, 'sitemap.xml'), sitemapXml, 'utf8');
-await writeFile(join(root, 'robots.txt'), robots(), 'utf8');
-written.push('404.html', 'sitemap.xml', 'robots.txt');
-
-const sitemapUrls = [...sitemapXml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-await writeFile(join(root, 'SEO_INDEX_INVENTORY.md'), inventoryDoc(tools, sitemapUrls), 'utf8');
-written.push('SEO_INDEX_INVENTORY.md');
-
-console.log('Origin: ' + PRODUCTION_ORIGIN);
-console.log('Wrote ' + written.length + ' files.');
-if (PRODUCTION_ORIGIN.includes('example.com')) {
-  console.log('\nPRODUCTION_ORIGIN is still example.com — set the real domain in src/config.js and re-run.');
+/** True when the working tree holds edits to this file that git has not seen. */
+function hasUncommittedChanges(relativePath) {
+  try {
+    const out = execFileSync('git', ['status', '--porcelain', '--', relativePath], {
+      cwd: root,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
+    return out.trim().length > 0;
+  } catch {
+    return false;
+  }
 }
+
+/**
+ * index.html, privacy.html and terms.html are written by hand, so comparing
+ * generator output against them says nothing about whether their text changed.
+ * Git is the only thing that knows.
+ */
+function handWrittenLastmod(relativePath, publishedDate) {
+  if (hasUncommittedChanges(relativePath)) return TODAY;
+  return gitLastModified(relativePath) ?? publishedDate ?? TODAY;
+}
+
+/**
+ * Write only when the bytes actually differ, and report when the content last
+ * moved. <lastmod> is supposed to mean "this page changed then". Stamping all
+ * 34 URLs with today's date on every build makes the field say "the build ran",
+ * which is not a signal a crawler can use — and it churns the file in git for
+ * no reason. Unchanged pages therefore keep their git commit date.
+ */
+async function writeIfChanged(relativePath, contents, previousLastmod) {
+  const file = join(root, relativePath);
+  let before = null;
+  try {
+    before = await readFile(file, 'utf8');
+  } catch {
+    // A page that does not exist yet is simply new.
+  }
+  if (before === contents) {
+    // The date already published wins: it is what crawlers have seen, and
+    // rederiving it from git would move it every time a page is committed on a
+    // different day from the build that produced it.
+    return { changed: false, lastmod: previousLastmod ?? gitLastModified(relativePath) ?? TODAY };
+  }
+  await mkdir(dirname(file), { recursive: true });
+  await writeFile(file, contents, 'utf8');
+  return { changed: true, lastmod: TODAY };
+}
+
+async function main() {
+  const tools = getTools();
+  const dialogs = await dialogsMarkup();
+  const written = [];
+  const lastmod = new Map();
+
+  // What the sitemap already says, so an unchanged page keeps the date it was
+  // last published with instead of drifting on every build.
+  const published = new Map();
+  try {
+    const previous = await readFile(join(root, 'sitemap.xml'), 'utf8');
+    for (const [, block] of previous.matchAll(/<url>([\s\S]*?)<\/url>/g)) {
+      const loc = block.match(/<loc>([^<]+)<\/loc>/)?.[1];
+      const date = block.match(/<lastmod>([^<]+)<\/lastmod>/)?.[1];
+      if (loc && date) published.set(loc, date);
+    }
+  } catch {
+    // No sitemap yet: every page is new.
+  }
+
+  const record = (url, path, result) => {
+    if (url) lastmod.set(url, result.lastmod);
+    if (result.changed) written.push(path);
+  };
+
+  const write = (url, path, contents) => writeIfChanged(path, contents, published.get(url));
+
+  for (const tool of tools) {
+    const path = tool.slug + '/index.html';
+    const url = PRODUCTION_ORIGIN + '/' + tool.slug + '/';
+    record(url, path, await write(url, path, await toolPage(tool, dialogs)));
+  }
+
+  // /tools/ and /tools/<category>/
+  const toolsUrl = PRODUCTION_ORIGIN + '/tools/';
+  record(toolsUrl, 'tools/index.html', await write(toolsUrl, 'tools/index.html', categoryPage(null, true)));
+
+  for (const group of getCategories()) {
+    const path = 'tools/' + group.slug + '/index.html';
+    const url = PRODUCTION_ORIGIN + '/tools/' + group.slug + '/';
+    record(url, path, await write(url, path, categoryPage(group, false)));
+  }
+
+  // Hand-written pages: keep their absolute URLs pointed at PRODUCTION_ORIGIN.
+  for (const [page, url] of [
+    ['index.html', PRODUCTION_ORIGIN + '/'],
+    ['privacy.html', PRODUCTION_ORIGIN + '/privacy'],
+    ['terms.html', PRODUCTION_ORIGIN + '/terms'],
+  ]) {
+    const before = await readFile(join(root, page), 'utf8');
+    const result = await write(url, page, retargetOrigin(before));
+    record(url, page, { ...result, lastmod: handWrittenLastmod(page, published.get(url)) });
+  }
+
+  record(null, '404.html', await writeIfChanged('404.html', notFoundPage()));
+
+  const sitemapXml = sitemap(tools, lastmod);
+  record(null, 'sitemap.xml', await writeIfChanged('sitemap.xml', sitemapXml));
+  record(null, 'robots.txt', await writeIfChanged('robots.txt', robots()));
+
+  const sitemapUrls = [...sitemapXml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+  record(null, 'SEO_INDEX_INVENTORY.md', await writeIfChanged('SEO_INDEX_INVENTORY.md', inventoryDoc(tools, sitemapUrls)));
+
+  console.log('Origin: ' + PRODUCTION_ORIGIN);
+  console.log(written.length ? 'Wrote ' + written.length + ' changed file(s):' : 'Everything already up to date.');
+  for (const path of written) console.log('  ' + path);
+  if (PRODUCTION_ORIGIN.includes('example.com')) {
+    console.log('\nPRODUCTION_ORIGIN is still example.com — set the real domain in src/config.js and re-run.');
+  }
+  return written;
+}
+
+// Importable: the SEO regression tests build pages in memory and assert on
+// them, which must not write 35 files as a side effect of the import.
+const invokedDirectly =
+  process.argv[1] !== undefined && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+if (invokedDirectly) await main();
+
+export { main, toolPage, categoryPage, notFoundPage, sitemap, robots, head, inventoryDoc, dialogsMarkup };

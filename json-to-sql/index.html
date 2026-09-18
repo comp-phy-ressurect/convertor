@@ -168,8 +168,16 @@
 
       <h1>JSON → SQL</h1>
       <p>Generate a CREATE TABLE statement from flat JSON rows.</p>
+    </div>
 
-      <div class="seo-body">
+    <!--
+      These notes sit OUTSIDE #app deliberately. app.js clears #app when it
+      boots, so anything inside it is gone from the rendered DOM — which is the
+      DOM a search engine indexes, and the one a reader sees a second after the
+      page paints. Out here they survive the boot. app.js hides them if the
+      visitor navigates on to another tool, because they describe this page.
+    -->
+    <div class="seo-body" id="tool-notes" data-seo-tool="json-to-sql">
       <p>Private by design. Your input never leaves this browser. Conversions run locally on your device.</p>
 
       <h2>What this tool handles</h2>
@@ -209,7 +217,6 @@ CREATE TABLE &quot;my_table&quot; (
         <li><a href="/convert/">Convert any format</a> — Pick an input format and an output format and convert between any pair.</li>
       </ul>
       <p><a href="/tools/">Browse all 25 tools</a></p>
-      </div>
     </div>
   </main>
 </div>

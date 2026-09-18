@@ -168,14 +168,22 @@
 
       <h1>Case Converter</h1>
       <p>Convert text between camelCase, snake_case, kebab-case and six more styles.</p>
+    </div>
 
-      <div class="seo-body">
+    <!--
+      These notes sit OUTSIDE #app deliberately. app.js clears #app when it
+      boots, so anything inside it is gone from the rendered DOM — which is the
+      DOM a search engine indexes, and the one a reader sees a second after the
+      page paints. Out here they survive the boot. app.js hides them if the
+      visitor navigates on to another tool, because they describe this page.
+    -->
+    <div class="seo-body" id="tool-notes" data-seo-tool="case-converter">
       <p>Private by design. Your input never leaves this browser. Conversions run locally on your device.</p>
 
       <h2>What this tool handles</h2>
       <ul>
         <li>camelCase, PascalCase, snake_case, kebab-case, CONSTANT_CASE, dot.case, Title Case, Sentence case, lower and UPPER.</li>
-        <li>Shows every style at once, or just the one you pick.</li>
+        <li>Shows every style at once for the first non-empty line, or converts every line when you pick a single style.</li>
         <li>Each line can be converted separately, so a whole list of identifiers can be pasted in.</li>
         <li>Existing casing, underscores, hyphens, dots and spaces are all read as word boundaries.</li>
       </ul>
@@ -199,6 +207,32 @@ lower case     user first name
 UPPER CASE     USER FIRST NAME</code></pre>
         </div>
       </div>
+      <h2>When you would use it</h2>
+      <ul class="seo-cases">
+        <li><strong>Renaming a block of API fields</strong> — Paste the keys of a response as one column and pick snake_case or camelCase; the list comes back in its original order, with blank lines left where they were.</li>
+        <li><strong>Environment variables from a settings path</strong> — CONSTANT_CASE turns database.pool.size or databasePoolSize into DATABASE_POOL_SIZE, which is the spelling a .env file or a container env block needs.</li>
+        <li><strong>Slugs for routes, classes and filenames</strong> — kebab-case gives the form a URL segment, a CSS class or a documentation filename wants, from a title or an identifier that was written in any other style.</li>
+        <li><strong>Seeing what a rename will really produce</strong> — Showing every style prints all ten results for the first non-empty line, so an awkward case — HTTPStatus arriving as httpStatus — is visible before you apply it across a codebase.</li>
+      </ul>
+      <h2>Common questions</h2>
+      <div class="seo-faq">
+        <div class="seo-faq__item">
+          <h3>How are acronyms handled?</h3>
+          <p>A run of capitals is one word, so HTTPStatus splits into HTTP and Status and parseJSONValue into parse, JSON and Value. CONSTANT_CASE restores them exactly, while camelCase and PascalCase lowercase all but the first letter, which makes a Pascal round trip give HttpStatus rather than HTTPStatus.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Where do digits create a word boundary?</h3>
+          <p>A run of digits is always its own word, so utf8Value gives utf_8_value and order99 gives order_99. camelCase and PascalCase join words without a separator, so utf8Value converts back to itself.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>What happens to punctuation and other symbols?</h3>
+          <p>Anything that is neither a letter nor a number is treated as a separator and does not survive: a.b, a-b and a b all produce the same two words, and an ampersand or an emoji is dropped. A line holding nothing else comes out empty.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Does it cope with non-ASCII identifiers?</h3>
+          <p>Yes — word splitting uses Unicode letter and number classes, so čeština and größe are not shredded. Case mapping follows the same rules, which means CONSTANT_CASE writes größe as GRÖSSE and that particular change cannot be undone by converting back.</p>
+        </div>
+      </div>
 
       <h2>Related tools</h2>
       <ul>
@@ -206,7 +240,6 @@ UPPER CASE     USER FIRST NAME</code></pre>
         <li><a href="/diff-checker/">Diff Checker</a> — Compare two texts or two JSON documents line by line or word by word.</li>
       </ul>
       <p><a href="/tools/">Browse all 25 tools</a></p>
-      </div>
     </div>
   </main>
 </div>

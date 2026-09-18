@@ -168,8 +168,16 @@
 
       <h1>ULID Generator</h1>
       <p>Generate lexicographically sortable ULIDs.</p>
+    </div>
 
-      <div class="seo-body">
+    <!--
+      These notes sit OUTSIDE #app deliberately. app.js clears #app when it
+      boots, so anything inside it is gone from the rendered DOM — which is the
+      DOM a search engine indexes, and the one a reader sees a second after the
+      page paints. Out here they survive the boot. app.js hides them if the
+      visitor navigates on to another tool, because they describe this page.
+    -->
+    <div class="seo-body" id="tool-notes" data-seo-tool="ulid-generator">
       <p>Private by design. Your input never leaves this browser. Conversions run locally on your device.</p>
 
       <h2>What this tool handles</h2>
@@ -179,6 +187,32 @@
         <li>Monotonic mode guarantees ordering within the same millisecond.</li>
         <li>1, 10 or 100 at a time.</li>
       </ul>
+      <h2>When you would use it</h2>
+      <ul class="seo-cases">
+        <li><strong>Primary keys in an insert-heavy table</strong> — Random identifiers scatter inserts across the whole of a B-tree index. ULIDs ascend, so new rows land at the right-hand edge of the index the way an auto-increment key does.</li>
+        <li><strong>Event ids that sort chronologically</strong> — Ordering an event table by its id column reproduces the order the events were written, which can save a secondary index on a created_at column.</li>
+        <li><strong>Seeding fixtures with ordered ids</strong> — Generate a block of ids in one go and paste it straight into a fixture file. Sorting that column afterwards gives the same order back, which makes snapshot assertions stable.</li>
+        <li><strong>Choosing between ULID and UUIDv7</strong> — Both put the same 48-bit millisecond timestamp first and both sort by time. UUIDv7 is a genuine UUID — 36 hyphenated hex characters, registered in RFC 9562 — while a ULID is a 26-character token that a UUID column or library will not accept.</li>
+      </ul>
+      <h2>Common questions</h2>
+      <div class="seo-faq">
+        <div class="seo-faq__item">
+          <h3>Why are two ULIDs made in the same millisecond out of order?</h3>
+          <p>They share their first ten characters and differ only in the random tail, so their relative order within that millisecond is arbitrary. Monotonic mode is what removes the ambiguity.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>How does a ULID differ from a UUID v4?</h3>
+          <p>A v4 UUID is 122 random bits with no time component, so two ids created a second apart sort no closer together than two created a year apart. A ULID also carries no hyphens, so it survives a URL or a filename without escaping.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Why Crockford base32 rather than base64?</h3>
+          <p>The alphabet leaves out I, L, O and U, so a ULID cannot be misread as a look-alike character or spell an unfortunate word, and it decodes case-insensitively.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Where do the random bits come from?</h3>
+          <p>From crypto.getRandomValues, the platform CSPRNG, not Math.random — the ULID library's own random source is replaced with an explicit Web Crypto one so it behaves the same in every context.</p>
+        </div>
+      </div>
 
       <h2>Related tools</h2>
       <ul>
@@ -186,7 +220,6 @@
         <li><a href="/uuid-generator/">UUID Generator</a> — Generate cryptographically random version 4 UUIDs.</li>
       </ul>
       <p><a href="/tools/">Browse all 25 tools</a></p>
-      </div>
     </div>
   </main>
 </div>

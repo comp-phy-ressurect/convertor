@@ -168,8 +168,16 @@
 
       <h1>Regex Tester</h1>
       <p>Test a regular expression against text with highlighted matches and capture groups.</p>
+    </div>
 
-      <div class="seo-body">
+    <!--
+      These notes sit OUTSIDE #app deliberately. app.js clears #app when it
+      boots, so anything inside it is gone from the rendered DOM — which is the
+      DOM a search engine indexes, and the one a reader sees a second after the
+      page paints. Out here they survive the boot. app.js hides them if the
+      visitor navigates on to another tool, because they describe this page.
+    -->
+    <div class="seo-body" id="tool-notes" data-seo-tool="regex-tester">
       <p>Private by design. Your input never leaves this browser. Conversions run locally on your device.</p>
 
       <h2>What this tool handles</h2>
@@ -179,6 +187,79 @@
         <li>The pattern runs in a Web Worker that is killed after 750 ms, so catastrophic backtracking cannot freeze the tab.</li>
         <li>Replacement supports $1, $2 and named group references.</li>
       </ul>
+      <h2>Example</h2>
+      <div class="seo-example">
+        <div>
+          <h3>Test string</h3>
+          <pre><code>ERROR order=8821 status=timeout
+WARN order=8822 status=retry</code></pre>
+        </div>
+        <div>
+          <h3>Matches</h3>
+          <pre><code>[
+  {
+    &quot;index&quot;: 0,
+    &quot;end&quot;: 16,
+    &quot;match&quot;: &quot;ERROR order=8821&quot;,
+    &quot;groups&quot;: [
+      {
+        &quot;name&quot;: &quot;level&quot;,
+        &quot;value&quot;: &quot;ERROR&quot;,
+        &quot;index&quot;: 0
+      },
+      {
+        &quot;name&quot;: &quot;id&quot;,
+        &quot;value&quot;: &quot;8821&quot;,
+        &quot;index&quot;: 12
+      }
+    ]
+  },
+  {
+    &quot;index&quot;: 32,
+    &quot;end&quot;: 47,
+    &quot;match&quot;: &quot;WARN order=8822&quot;,
+    &quot;groups&quot;: [
+      {
+        &quot;name&quot;: &quot;level&quot;,
+        &quot;value&quot;: &quot;WARN&quot;,
+        &quot;index&quot;: 32
+      },
+      {
+        &quot;name&quot;: &quot;id&quot;,
+        &quot;value&quot;: &quot;8822&quot;,
+        &quot;index&quot;: 43
+      }
+    ]
+  }
+]</code></pre>
+        </div>
+      </div>
+      <h2>When you would use it</h2>
+      <ul class="seo-cases">
+        <li><strong>Building a log-parsing pattern</strong> — Paste two or three real log lines and grow the pattern one field at a time. The highlighted copy of the input shows which characters each match actually consumed, so a greedy quantifier that ran past a field boundary is visible rather than guessed at.</li>
+        <li><strong>Checking a validation rule</strong> — Put the strings the rule must accept and the ones it must reject into a single block, then read off which get highlighted — testing only the accepted cases is how an over-permissive rule ships.</li>
+        <li><strong>Naming capture groups</strong> — Write (?&lt;level&gt;ERROR|WARN) and the results table labels that column level instead of 1, matching what match.groups gives you in code. A group that took no part in a match is listed as (no match).</li>
+        <li><strong>Reproducing a ReDoS report</strong> — Paste the suspect pattern together with the attack string: if the run is cut short, that pattern really does backtrack catastrophically on that input. Nested quantifiers such as (a+)+ are the usual cause.</li>
+      </ul>
+      <h2>Common questions</h2>
+      <div class="seo-faq">
+        <div class="seo-faq__item">
+          <h3>Which regex flavour does this use?</h3>
+          <p>The browser's own ECMAScript engine, through the RegExp constructor. Constructs that exist only in PCRE — atomic groups, possessive quantifiers, recursion — are not available here.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Do I write the pattern with slashes, like /foo/g?</h3>
+          <p>No. The pattern field takes the body of the expression alone and flags are a separate control, so a leading and trailing slash would be matched as literal characters.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Why does it find only one match?</h3>
+          <p>Without the g flag a JavaScript regular expression returns the first match and stops — that is engine behaviour, not a limit of the tool. Add g to the flags field to find them all.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>How many matches does it list?</h3>
+          <p>Up to 1000, after which the list is cut and the summary is marked truncated. Find and replace is not capped the same way: every occurrence is replaced, and the reported count is exact up to 100,000.</p>
+        </div>
+      </div>
 
       <h2>Related tools</h2>
       <ul>
@@ -186,7 +267,6 @@
         <li><a href="/diff-checker/">Diff Checker</a> — Compare two texts or two JSON documents line by line or word by word.</li>
       </ul>
       <p><a href="/tools/">Browse all 25 tools</a></p>
-      </div>
     </div>
   </main>
 </div>

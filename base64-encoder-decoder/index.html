@@ -168,8 +168,16 @@
 
       <h1>Base64 Encode / Decode</h1>
       <p>Encode and decode Base64 and Base64URL with correct UTF-8 handling.</p>
+    </div>
 
-      <div class="seo-body">
+    <!--
+      These notes sit OUTSIDE #app deliberately. app.js clears #app when it
+      boots, so anything inside it is gone from the rendered DOM — which is the
+      DOM a search engine indexes, and the one a reader sees a second after the
+      page paints. Out here they survive the boot. app.js hides them if the
+      visitor navigates on to another tool, because they describe this page.
+    -->
+    <div class="seo-body" id="tool-notes" data-seo-tool="base64-encoder-decoder">
       <p>Private by design. Your input never leaves this browser. Conversions run locally on your device.</p>
 
       <h2>What this tool handles</h2>
@@ -190,6 +198,32 @@
           <pre><code>xb1vZmllICYgQWRh</code></pre>
         </div>
       </div>
+      <h2>When you would use it</h2>
+      <ul class="seo-cases">
+        <li><strong>Assembling a data: URI</strong> — An inline SVG or a small JSON payload in CSS or a src attribute goes after the media type as standard padded Base64. The input is text, so it encodes markup and strings rather than a binary file you drop on it.</li>
+        <li><strong>Reading an HTTP Basic auth header</strong> — The value after &quot;Basic&quot; is user:password in standard Base64 — decoding one tells you which account a stored credential or a captured request belongs to.</li>
+        <li><strong>Binary fields carried inside JSON</strong> — JSON has no byte type, so APIs pass certificates, keys and thumbnails as Base64 strings. Decoding one that really holds binary stops with a message saying so, because the output pane is text.</li>
+        <li><strong>A Base64 block copied out of a raw email</strong> — MIME wraps attachment bodies at 76 characters. All whitespace is removed before decoding, so a block pasted straight from the message source works without rejoining the lines.</li>
+      </ul>
+      <h2>Common questions</h2>
+      <div class="seo-faq">
+        <div class="seo-faq__item">
+          <h3>What is the difference between Base64 and base64url?</h3>
+          <p>Only the last two symbols: base64url writes &quot;-&quot; and &quot;_&quot; where standard Base64 writes &quot;+&quot; and &quot;/&quot;, so the result survives inside a URL path, a query string or a JWT segment untouched. The alphabet option picks which one to emit; decoding accepts either without being told.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Does the &quot;=&quot; padding matter?</h3>
+          <p>Not for decoding here — padding is stripped first and unpadded input is accepted. It matters for stricter parsers: JWT segments are always unpadded, while a data: URI or an Authorization header normally carries the padding.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Does Base64 protect anything?</h3>
+          <p>No. It is a transport encoding that anyone can reverse, so a Basic auth header is effectively a plaintext credential and a Base64 blob in a config file hides nothing from whoever can read the file.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Why is the output longer than the input?</h3>
+          <p>Every three bytes become four characters, so the result grows by about a third. Multi-byte characters count as their UTF-8 bytes: &quot;Z&quot; with a caron is two bytes before encoding even though it is one character.</p>
+        </div>
+      </div>
 
       <h2>Related tools</h2>
       <ul>
@@ -199,7 +233,6 @@
         <li><a href="/hash-generator/">Hash Generator</a> — Compute SHA-256, SHA-384, SHA-512, SHA-1 and MD5 digests of text or a file.</li>
       </ul>
       <p><a href="/tools/">Browse all 25 tools</a></p>
-      </div>
     </div>
   </main>
 </div>

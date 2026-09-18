@@ -168,8 +168,16 @@
 
       <h1>JSON → Zod</h1>
       <p>Generate a Zod schema from a JSON sample.</p>
+    </div>
 
-      <div class="seo-body">
+    <!--
+      These notes sit OUTSIDE #app deliberately. app.js clears #app when it
+      boots, so anything inside it is gone from the rendered DOM — which is the
+      DOM a search engine indexes, and the one a reader sees a second after the
+      page paints. Out here they survive the boot. app.js hides them if the
+      visitor navigates on to another tool, because they describe this page.
+    -->
+    <div class="seo-body" id="tool-notes" data-seo-tool="json-to-zod">
       <p>Private by design. Your input never leaves this browser. Conversions run locally on your device.</p>
 
       <h2>What this tool handles</h2>
@@ -198,6 +206,31 @@ export const RootSchema = z.object({
 export type Root = z.infer&lt;typeof RootSchema&gt;;</code></pre>
         </div>
       </div>
+      <h2>When you would use it</h2>
+      <ul class="seo-cases">
+        <li><strong>Seeding validation at an API boundary</strong> — Generate a schema from a real upstream response and parse with it inside the fetch wrapper, so a shape change fails at the boundary rather than three components later.</li>
+        <li><strong>Validating a webhook or queue message</strong> — A captured delivery gives the first draft of the safeParse call in the handler, which you then tighten on the fields the handler actually reads.</li>
+        <li><strong>A validator and a type from one sample</strong> — The exported z.infer alias is named after the schema with a trailing &quot;Schema&quot; removed, so UserSchema also gives you a User type and there is nothing to keep in step by hand.</li>
+      </ul>
+      <h2>Common questions</h2>
+      <div class="seo-faq">
+        <div class="seo-faq__item">
+          <h3>Are nested objects extracted into separate schemas?</h3>
+          <p>No. Every level is inlined into a single expression, however deep the sample goes, and nothing named is declared below the root. Lift an AddressSchema out by hand if you want to reuse it.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Does it recognise emails, UUIDs or ISO dates?</h3>
+          <p>No. Every string becomes a plain z.string() with no refinement: no .email(), no .uuid(), no .datetime(), and no min, max or length on strings, numbers or arrays. Those are the parts worth adding yourself.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>How are optional and nullable fields told apart?</h3>
+          <p>A key missing from some elements of a sample array gets .optional(), and a key seen as null in at least one record gets .nullable(). A key that was null in every record becomes z.null() on its own, since nothing else was ever observed.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Are unknown keys rejected?</h3>
+          <p>No. A plain z.object() is emitted and neither .strict() nor .passthrough() is ever added, so extra keys follow the default Zod behaviour and are stripped instead of raising an issue.</p>
+        </div>
+      </div>
 
       <h2>Related tools</h2>
       <ul>
@@ -209,7 +242,6 @@ export type Root = z.infer&lt;typeof RootSchema&gt;;</code></pre>
         <li><a href="/convert/">Convert any format</a> — Pick an input format and an output format and convert between any pair.</li>
       </ul>
       <p><a href="/tools/">Browse all 25 tools</a></p>
-      </div>
     </div>
   </main>
 </div>

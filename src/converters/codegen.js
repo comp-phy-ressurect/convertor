@@ -81,13 +81,13 @@ function tsTypeFor(shape, nameHint, ctx) {
       return shape.variants.map((v) => tsTypeFor(v, nameHint, { ...ctx, isRoot: false })).join(' | ');
     case 'object': {
       if (shape.fields.length === 0) return 'Record<string, ' + (ctx.useUnknown ? 'unknown' : 'any') + '>';
-      const structural = JSON.stringify(shape.fields.map((f) => [f.key, f.optional]));
-      const existing = ctx.emitted.get(structural + declKeyOf(shape));
+      const structural = shapeKey(shape);
+      const existing = ctx.emitted.get(structural);
       if (existing) return existing;
 
       const name = ctx.isRoot ? nameHint : uniqueName(typeNameFrom(nameHint, 'Item'), ctx.used);
       if (ctx.isRoot) ctx.used.add(name);
-      ctx.emitted.set(structural + declKeyOf(shape), name);
+      ctx.emitted.set(structural, name);
 
       const lines = shape.fields.map((field) => {
         const { nullable, shape: inner } = extractNullable(field.shape);
@@ -114,8 +114,18 @@ function tsTypeFor(shape, nameHint, ctx) {
   }
 }
 
-function declKeyOf(shape) {
-  return shape.fields.map((f) => f.key + ':' + f.shape.kind).join(',');
+/**
+ * A complete structural fingerprint, so that two places holding genuinely the
+ * same object share one interface instead of producing From and From2.
+ *
+ * It has to describe the shape all the way down. Keying on the field names and
+ * their immediate kinds alone made {m: {x: number}} and {m: {y: string}} look
+ * identical, and the second one was emitted with the first one's type — the
+ * wrong answer, and a silent one. Shapes are plain acyclic data, so stringifying
+ * them is both exact and cheap.
+ */
+function shapeKey(shape) {
+  return JSON.stringify(shape);
 }
 
 function needsParens(type) {

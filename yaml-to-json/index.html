@@ -168,8 +168,16 @@
 
       <h1>YAML → JSON</h1>
       <p>Parse YAML and emit pretty-printed JSON.</p>
+    </div>
 
-      <div class="seo-body">
+    <!--
+      These notes sit OUTSIDE #app deliberately. app.js clears #app when it
+      boots, so anything inside it is gone from the rendered DOM — which is the
+      DOM a search engine indexes, and the one a reader sees a second after the
+      page paints. Out here they survive the boot. app.js hides them if the
+      visitor navigates on to another tool, because they describe this page.
+    -->
+    <div class="seo-body" id="tool-notes" data-seo-tool="yaml-to-json">
       <p>Private by design. Your input never leaves this browser. Conversions run locally on your device.</p>
 
       <h2>What this tool handles</h2>
@@ -202,6 +210,32 @@ ports:
 }</code></pre>
         </div>
       </div>
+      <h2>When you would use it</h2>
+      <ul class="seo-cases">
+        <li><strong>Querying a GitHub Actions workflow</strong> — Turn .github/workflows/ci.yml into JSON so you can pull out job names or matrix entries with jq instead of grepping indented text.</li>
+        <li><strong>Helm values against an API payload</strong> — Convert a values.yaml fragment to JSON and diff it against what the cluster API actually returned, without the indentation getting in the way.</li>
+        <li><strong>An OpenAPI spec for a generator</strong> — Most YAML-authored OpenAPI documents have to be handed to client generators and schema validators as JSON. This does that one step.</li>
+        <li><strong>Ansible vars into a test fixture</strong> — Paste a group_vars block and get a JSON object you can drop straight into a unit test or a mock response.</li>
+      </ul>
+      <h2>Common questions</h2>
+      <div class="seo-faq">
+        <div class="seo-faq__item">
+          <h3>Are anchors, aliases and merge keys resolved?</h3>
+          <p>Yes. An &amp;anchor referenced by *alias is written out in full wherever it was used, and a &lt;&lt; merge key is flattened into the mapping that inherits it. The JSON has no reference back to the original anchor.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Does &quot;on:&quot; in a workflow file become true?</h3>
+          <p>No. Parsing follows the YAML 1.2 core rules, so on, off, yes and no all stay strings; only true and false become JSON booleans.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>What happens to duplicate keys?</h3>
+          <p>The document is rejected rather than silently collapsed. The error reads &quot;duplicated mapping key&quot; and carries the line and column of the second occurrence.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Do large integers survive the conversion?</h3>
+          <p>Not beyond 2^53. YAML integers are read as JavaScript numbers, so 12345678901234567890 comes out as 12345678901234567000. Quote the value in the YAML if the exact digits matter.</p>
+        </div>
+      </div>
 
       <h2>Related tools</h2>
       <ul>
@@ -213,7 +247,6 @@ ports:
         <li><a href="/csv-to-json/">CSV → JSON</a> — Parse CSV or TSV into JSON, with delimiter detection and optional type coercion.</li>
       </ul>
       <p><a href="/tools/">Browse all 25 tools</a></p>
-      </div>
     </div>
   </main>
 </div>

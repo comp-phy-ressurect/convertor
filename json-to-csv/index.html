@@ -168,8 +168,16 @@
 
       <h1>JSON → CSV</h1>
       <p>Turn an array of objects into a CSV table.</p>
+    </div>
 
-      <div class="seo-body">
+    <!--
+      These notes sit OUTSIDE #app deliberately. app.js clears #app when it
+      boots, so anything inside it is gone from the rendered DOM — which is the
+      DOM a search engine indexes, and the one a reader sees a second after the
+      page paints. Out here they survive the boot. app.js hides them if the
+      visitor navigates on to another tool, because they describe this page.
+    -->
+    <div class="seo-body" id="tool-notes" data-seo-tool="json-to-csv">
       <p>Private by design. Your input never leaves this browser. Conversions run locally on your device.</p>
 
       <h2>What this tool handles</h2>
@@ -193,6 +201,31 @@
 2,Linus,maintainer</code></pre>
         </div>
       </div>
+      <h2>When you would use it</h2>
+      <ul class="seo-cases">
+        <li><strong>Opening an API response in a spreadsheet</strong> — Paste the array a REST endpoint returned and get a table Excel, Sheets or Numbers will open directly. Pick the semicolon delimiter if your locale of Excel expects one.</li>
+        <li><strong>Sending results to someone without a JSON viewer</strong> — A dump from a log search or an admin endpoint becomes rows a colleague can sort and filter with no tooling beyond a spreadsheet.</li>
+        <li><strong>Preparing a file for a bulk import</strong> — Import forms and data-loading tools usually accept CSV only, so a JSON fixture has to be flattened first. A single object is written as a one-row table.</li>
+      </ul>
+      <h2>Common questions</h2>
+      <div class="seo-faq">
+        <div class="seo-faq__item">
+          <h3>How are commas, quotes and line breaks escaped?</h3>
+          <p>A value is wrapped in double quotes when it contains the delimiter, a double quote or a line break, and any double quote inside it is doubled. With the semicolon or tab delimiter selected, a comma inside a value needs no quoting at all.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>What happens to a JSON null?</h3>
+          <p>It becomes an empty cell, which is indistinguishable from an empty string or from a key the record never had. Substitute a sentinel value before converting if that difference matters downstream.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Does the input have to be an array of objects?</h3>
+          <p>A single object is accepted and becomes one row, and an envelope such as {&quot;people&quot;: [ ... ]} whose one top-level key holds the array is unwrapped for you. An array of strings or numbers is refused, and the error names the record that is not an object.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Are values reformatted on the way out?</h3>
+          <p>No. Booleans are written as true and false, and strings are copied verbatim, so &quot;007&quot; keeps its leading zeros and a date stays in whatever format the JSON already used.</p>
+        </div>
+      </div>
 
       <h2>Related tools</h2>
       <ul>
@@ -204,7 +237,6 @@
         <li><a href="/toml-to-json/">TOML → JSON</a> — Parse TOML configuration into JSON.</li>
       </ul>
       <p><a href="/tools/">Browse all 25 tools</a></p>
-      </div>
     </div>
   </main>
 </div>

@@ -168,8 +168,16 @@
 
       <h1>URL Encode / Decode</h1>
       <p>Percent-encode or decode text, or break a full URL into its parts.</p>
+    </div>
 
-      <div class="seo-body">
+    <!--
+      These notes sit OUTSIDE #app deliberately. app.js clears #app when it
+      boots, so anything inside it is gone from the rendered DOM — which is the
+      DOM a search engine indexes, and the one a reader sees a second after the
+      page paints. Out here they survive the boot. app.js hides them if the
+      visitor navigates on to another tool, because they describe this page.
+    -->
+    <div class="seo-body" id="tool-notes" data-seo-tool="url-encoder-decoder">
       <p>Private by design. Your input never leaves this browser. Conversions run locally on your device.</p>
 
       <h2>What this tool handles</h2>
@@ -190,6 +198,32 @@
           <pre><code>hello%20world%26lang%3Dcs</code></pre>
         </div>
       </div>
+      <h2>When you would use it</h2>
+      <ul class="seo-cases">
+        <li><strong>One value going into a query string</strong> — Component scope escapes &amp;, = and / inside the value, which is what stops a search term or a filter expression from ending the parameter early.</li>
+        <li><strong>Reading the redirect_uri out of an authorize URL</strong> — Inspecting an OAuth URL decodes each parameter once, so redirect_uri and scope come back readable. A value that is still full of escapes afterwards was encoded twice on the way in.</li>
+        <li><strong>A link that only needs its spaces fixed</strong> — Whole-URL scope leaves : / ? # &amp; = alone and escapes only what is illegal, which is the right treatment for an address pasted out of a document or a chat message.</li>
+        <li><strong>A form body copied from the network tab</strong> — An application/x-www-form-urlencoded body writes spaces as +, so switch the plus option on before decoding it — and leave it off for a path segment, where + is an ordinary character.</li>
+      </ul>
+      <h2>Common questions</h2>
+      <div class="seo-faq">
+        <div class="seo-faq__item">
+          <h3>Why are ! ' ( ) * ~ left unescaped?</h3>
+          <p>encodeURIComponent exempts them, along with letters, digits and - . _ , and they are legal in a query value. A stricter consumer, such as an RFC 3986 or OAuth 1.0 signature, wants them escaped, so percent-encode those few by hand.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Is a space %20 or a plus?</h3>
+          <p>Encoding here always produces %20. A plus means a space only under the form-submission rules, which is why decoding it that way is an explicit option rather than the default.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Why did decoding leave some escapes behind?</h3>
+          <p>Whole-URL scope refuses to decode the escapes that stand for reserved characters — %2F, %3F, %26 and the rest — because doing so would change how the address parses. Switch to component scope to decode everything.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Why does the parameter count exceed the number of keys shown?</h3>
+          <p>The count covers every name-value pair, while the parsed object holds one entry per name. With ?tag=a&amp;tag=b it counts two and shows tag once, with the last value winning, so check the raw query string when repeated keys matter.</p>
+        </div>
+      </div>
 
       <h2>Related tools</h2>
       <ul>
@@ -199,7 +233,6 @@
         <li><a href="/hash-generator/">Hash Generator</a> — Compute SHA-256, SHA-384, SHA-512, SHA-1 and MD5 digests of text or a file.</li>
       </ul>
       <p><a href="/tools/">Browse all 25 tools</a></p>
-      </div>
     </div>
   </main>
 </div>

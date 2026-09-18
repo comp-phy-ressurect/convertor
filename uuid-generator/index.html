@@ -168,16 +168,49 @@
 
       <h1>UUID Generator</h1>
       <p>Generate cryptographically random version 4 UUIDs.</p>
+    </div>
 
-      <div class="seo-body">
+    <!--
+      These notes sit OUTSIDE #app deliberately. app.js clears #app when it
+      boots, so anything inside it is gone from the rendered DOM — which is the
+      DOM a search engine indexes, and the one a reader sees a second after the
+      page paints. Out here they survive the boot. app.js hides them if the
+      visitor navigates on to another tool, because they describe this page.
+    -->
+    <div class="seo-body" id="tool-notes" data-seo-tool="uuid-generator">
       <p>Private by design. Your input never leaves this browser. Conversions run locally on your device.</p>
 
       <h2>What this tool handles</h2>
       <ul>
-        <li>Generates version 4 UUIDs from crypto.randomUUID(), which uses the operating system's random source.</li>
+        <li>Generates version 4 UUIDs from crypto.randomUUID(), falling back to crypto.getRandomValues outside a secure context. Both draw on the operating system's random source.</li>
         <li>1, 10 or 100 at a time, lowercase or uppercase.</li>
         <li>Version 4 carries no timestamp and no MAC address, and sorts randomly.</li>
       </ul>
+      <h2>When you would use it</h2>
+      <ul class="seo-cases">
+        <li><strong>Filling a fixture or a seed script</strong> — Ask for a hundred at once and they arrive one per line, ready to paste into a factory file, a migration or a column of test data.</li>
+        <li><strong>Ids minted before anything reaches the server</strong> — An offline-first client, or a retry that needs a stable idempotency key, has to name a record without asking a database for the next number. 122 random bits make a clash between two clients not worth planning for.</li>
+        <li><strong>A correlation id for a request you are replaying</strong> — Paste one into an X-Request-Id header on a hand-built curl call and the same value traces that single call through every log line it touches.</li>
+      </ul>
+      <h2>Common questions</h2>
+      <div class="seo-faq">
+        <div class="seo-faq__item">
+          <h3>Which UUID versions does this produce?</h3>
+          <p>Version 4 only. There is no v1, v5 or v7 here and no nil UUID; if you want identifiers that sort by creation time, use the ULID tool or a UUIDv7 implementation in your own language.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Where does the randomness come from?</h3>
+          <p>crypto.randomUUID, which draws on the platform's cryptographic random source rather than Math.random. Six of the 128 bits are fixed to mark the version and the variant, leaving 122 random ones. Outside a secure context the same bits come from crypto.getRandomValues with those markers set explicitly.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Why do these behave badly as a database key?</h3>
+          <p>Two values generated a moment apart share no leading digits, so rows scatter across the whole index instead of landing together, and ordering by the column tells you nothing about when anything was written.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Can I get them without hyphens or inside braces?</h3>
+          <p>No. The output is always the canonical 8-4-4-4-12 hyphenated form, one per line, and case is the only formatting choice. Strip the hyphens or add braces afterwards for a registry-style GUID.</p>
+        </div>
+      </div>
 
       <h2>Related tools</h2>
       <ul>
@@ -185,7 +218,6 @@
         <li><a href="/ulid-generator/">ULID Generator</a> — Generate lexicographically sortable ULIDs.</li>
       </ul>
       <p><a href="/tools/">Browse all 25 tools</a></p>
-      </div>
     </div>
   </main>
 </div>

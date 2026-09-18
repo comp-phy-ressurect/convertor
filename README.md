@@ -151,7 +151,7 @@ If you want the notes back, `renderStatus()` in `src/ui.js` is the single place 
 
 That single rule is what makes two things possible:
 
-1. The test harness at `/tests/` can import and exercise every converter directly, with no DOM fixtures and no headless browser automation.
+1. The test suite can import and exercise every converter directly, in a browser at `/tests/` or under Node with `node tests/node.mjs`, with no DOM fixtures and no headless browser automation.
 2. The same module can be imported inside a Web Worker, which is how the regex tester gets a real 750 ms timeout instead of freezing the tab.
 
 The corollary is that adding a converter never means editing `ui.js` — the UI renders itself entirely from the registry's options schema.
@@ -326,10 +326,25 @@ Async converters set `isAsync: true` and return a promise. Tools that need two i
 ## Testing
 
 ```
-http://localhost:8080/tests/
+node tests/node.mjs          # everything, from a terminal
+http://localhost:8080/tests/ # the same converter tests, in a browser
 ```
 
-The harness is a zero-dependency browser page. It imports the pure converter and detector functions directly as ES modules, runs every case, and renders PASS/FAIL per case with the actual output next to the expected output when they differ. There is no test framework, no runner to install and no build step — open the URL and read the result.
+`tests/node.mjs` runs the converter suite plus the SEO checks in `tests/seo.mjs`,
+and exits non-zero on the first failure, which is what CI uses. The handful of
+tests that genuinely need a DOM report as skipped rather than passing.
+
+The SEO checks are Node-only because they read the generated pages off disk.
+They assert what is easy to break silently: a unique title and a
+self-referencing canonical on every indexable page, one `h1`, no stray
+`noindex`, JSON-LD that parses, every internal link resolving to a file that is
+actually served, the sitemap listing exactly the indexable pages, and — the one
+that prompted the rest — that each page's supporting content sits **outside**
+`#app`, because `app.js` clears `#app` on boot and anything inside it is absent
+from the DOM a crawler indexes. They also fail when a generated page has drifted
+from what `scripts/build-seo.mjs` would write today.
+
+The browser harness is a zero-dependency page. It imports the pure converter and detector functions directly as ES modules, runs every case, and renders PASS/FAIL per case with the actual output next to the expected output when they differ. There is no test framework, no runner to install and no build step — open the URL and read the result.
 
 It tests **the pure functions, not the DOM.** UI wiring, dialogs, routing and clipboard behaviour are not covered; that is a deliberate trade for having tests that run anywhere with zero setup. If a change touches `ui.js` or `app.js`, exercise it by hand.
 
@@ -403,7 +418,8 @@ That rewrites every static entry page, `sitemap.xml` and `robots.txt` so that ev
 - [ ] No console errors or warnings on load, on a conversion, and on opening each dialog.
 - [ ] **No network requests fire when converting.** Open DevTools → Network, filter to XHR/Fetch, clear it, then run several conversions including a file drop and a hash. The list must stay empty.
 - [ ] `localStorage` behaves: history records, "Clear history" empties it, disabling history in Settings stops recording, and "Delete all local data" removes every `devconvert:` key.
-- [ ] `privacy.html` and `terms.html` have been reviewed by a lawyer and their template banners removed.
+- [x] The drafting banners and the `[Operator: …]` note have been removed from `privacy.html` and `terms.html`; `tests/seo.mjs` fails if anything like them is published again.
+- [ ] `privacy.html` and `terms.html` have been reviewed by a lawyer. The pages still name no legal entity, no data controller and no postal address, because nothing in this repository establishes them.
 
 ---
 

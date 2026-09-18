@@ -168,13 +168,21 @@
 
       <h1>JSON → YAML</h1>
       <p>Convert JSON to readable YAML with configurable indentation.</p>
+    </div>
 
-      <div class="seo-body">
+    <!--
+      These notes sit OUTSIDE #app deliberately. app.js clears #app when it
+      boots, so anything inside it is gone from the rendered DOM — which is the
+      DOM a search engine indexes, and the one a reader sees a second after the
+      page paints. Out here they survive the boot. app.js hides them if the
+      visitor navigates on to another tool, because they describe this page.
+    -->
+    <div class="seo-body" id="tool-notes" data-seo-tool="json-to-yaml">
       <p>Private by design. Your input never leaves this browser. Conversions run locally on your device.</p>
 
       <h2>What this tool handles</h2>
       <ul>
-        <li>Indentation of 2 or 4 spaces, or 0 for a compact flow style.</li>
+        <li>Indentation of 2 or 4 spaces. Output is always block style, never flow style.</li>
         <li>Keys can be sorted alphabetically instead of keeping their original order.</li>
         <li>Repeated structures are written out in full; no anchors or aliases are emitted.</li>
         <li>Strings that YAML would otherwise read as numbers, booleans or dates are quoted.</li>
@@ -194,6 +202,32 @@ ports:
   - 443</code></pre>
         </div>
       </div>
+      <h2>When you would use it</h2>
+      <ul class="seo-cases">
+        <li><strong>A Kubernetes manifest back into the repo</strong> — kubectl get deployment -o json gives you the live object; this turns it back into the YAML shape a manifest file is expected to have.</li>
+        <li><strong>Writing a Docker Compose file</strong> — A compose definition assembled in a script is easier to build as JSON. Convert it once at the end so the checked-in compose.yaml stays hand-editable.</li>
+        <li><strong>Config for a Spring or Rails app</strong> — Take a settings object you already have as JSON and emit the application.yml form, with nesting rather than dotted keys.</li>
+        <li><strong>Seeding a Helm values file</strong> — Turn the default values an operator emits as JSON into the values.yaml a chart consumer will read and comment.</li>
+      </ul>
+      <h2>Common questions</h2>
+      <div class="seo-faq">
+        <div class="seo-faq__item">
+          <h3>Why did a long string get wrapped across lines?</h3>
+          <p>Output folds at 120 columns, so a long value becomes a &gt;- folded block. A single token with no spaces in it cannot be folded and is left on one line.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>How is a string containing newlines written?</h3>
+          <p>As a | literal block, so a shell script or a certificate stays readable line by line instead of collapsing into one quoted string full of \n escapes.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Does &quot;Sort keys alphabetically&quot; apply to nested objects?</h3>
+          <p>Yes, it sorts at every level, not just the top one. Leave it off to keep the original JSON key order.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Does the compact indentation choice produce flow style?</h3>
+          <p>No. YAML output here is always block style, and the compact choice falls back to two spaces, so it gives the same result as the 2-space choice. Pick 4 spaces if your linter wants them.</p>
+        </div>
+      </div>
 
       <h2>Related tools</h2>
       <ul>
@@ -205,7 +239,6 @@ ports:
         <li><a href="/csv-to-json/">CSV → JSON</a> — Parse CSV or TSV into JSON, with delimiter detection and optional type coercion.</li>
       </ul>
       <p><a href="/tools/">Browse all 25 tools</a></p>
-      </div>
     </div>
   </main>
 </div>

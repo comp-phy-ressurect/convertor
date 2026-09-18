@@ -168,15 +168,23 @@
 
       <h1>JSON Formatter</h1>
       <p>Pretty-print or minify JSON and validate it in one step.</p>
+    </div>
 
-      <div class="seo-body">
+    <!--
+      These notes sit OUTSIDE #app deliberately. app.js clears #app when it
+      boots, so anything inside it is gone from the rendered DOM — which is the
+      DOM a search engine indexes, and the one a reader sees a second after the
+      page paints. Out here they survive the boot. app.js hides them if the
+      visitor navigates on to another tool, because they describe this page.
+    -->
+    <div class="seo-body" id="tool-notes" data-seo-tool="json-formatter">
       <p>Private by design. Your input never leaves this browser. Conversions run locally on your device.</p>
 
       <h2>What this tool handles</h2>
       <ul>
         <li>Pretty-print with 2 or 4 spaces, or minify to a single line.</li>
         <li>A syntax error reports the line and column and a hint for the usual causes.</li>
-        <li>Key order is preserved exactly as written.</li>
+        <li>Key order is preserved, except that keys which are decimal integers move to the front in ascending order — that is how JavaScript objects order their properties.</li>
       </ul>
       <h2>Example</h2>
       <div class="seo-example">
@@ -196,6 +204,28 @@
 }</code></pre>
         </div>
       </div>
+      <h2>When you would use it</h2>
+      <ul class="seo-cases">
+        <li><strong>Reading a response copied from devtools</strong> — Paste the single-line body you copied from the Network tab and get an indented document you can actually scan for the field you were looking for.</li>
+        <li><strong>Packing JSON into an environment variable</strong> — Minify a service-account blob or a config object so it fits on one line in a .env file or a CI secret that only accepts a single value.</li>
+        <li><strong>Finding the error in a hand-edited tsconfig</strong> — When a build fails with a bare parse error, this reports the line and column of the trailing comma or unquoted key that caused it.</li>
+        <li><strong>Normalising a fixture before review</strong> — Re-indent a committed JSON fixture to 2 or 4 spaces so the next diff shows the values that changed rather than the whitespace.</li>
+      </ul>
+      <h2>Common questions</h2>
+      <div class="seo-faq">
+        <div class="seo-faq__item">
+          <h3>What happens to duplicate keys?</h3>
+          <p>The last one wins and the earlier value is discarded without a warning, which is what JSON.parse does. {&quot;a&quot;:1,&quot;a&quot;:2} formats as {&quot;a&quot;: 2}.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Will a large ID keep all its digits?</h3>
+          <p>No. Numbers are parsed as IEEE-754 doubles, so an integer past 2^53 is rounded, 1.0 prints as 1 and -0 prints as 0. Keep IDs of that size as strings.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Does it accept comments or trailing commas?</h3>
+          <p>No, the input has to be strict JSON. Comments, single-quoted keys, trailing commas, NaN and several documents pasted one after another are all reported as errors with a position.</p>
+        </div>
+      </div>
 
       <h2>Related tools</h2>
       <ul>
@@ -207,7 +237,6 @@
         <li><a href="/json-to-csv/">JSON → CSV</a> — Turn an array of objects into a CSV table.</li>
       </ul>
       <p><a href="/tools/">Browse all 25 tools</a></p>
-      </div>
     </div>
   </main>
 </div>

@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>FormatPort — Developer Converters That Run in Your Browser</title>
-<meta name="description" content="Twenty-plus developer converters — convert between JSON, YAML, TOML, CSV, TSV, XML and HTML tables, plus JWT, Base64, cURL, regex and hashes — running entirely in your browser. No upload, no signup, no tracking.">
+<meta name="description" content="Convert JSON, YAML, TOML, CSV, XML, JWT, Base64, hashes and timestamps — 25 developer tools that run entirely in your browser. Nothing is uploaded.">
 <link rel="canonical" href="https://formatport.com/">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="index, follow, max-image-preview:large">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="FormatPort">
 <meta property="og:title" content="FormatPort — Developer Converters That Run in Your Browser">
@@ -102,44 +102,51 @@
   </nav>
 
   <main id="workspace" class="workspace">
+    <section class="intro intro--head" data-seo-tool="home">
+      <h1>Developer converters that run entirely in your browser</h1>
+      <p class="intro__lead">
+        FormatPort is a toolbox of JSON, YAML, TOML, CSV, TSV, XML, JWT, Base64, cURL, regex,
+        hash and text converters — pick any input and output format and it converts between them. Everything is parsed and generated locally by JavaScript in this tab.
+        There is no server component, no account, and no analytics.
+      </p>
+    </section>
+
     <!--
-      Static content below is what a crawler and a no-JS visitor see.
-      app.js replaces it with the interactive workspace on load.
+      app.js clears #app when it boots, so this is the one part of the page
+      that does not survive. The converter renders in here; everything a reader
+      or a crawler should still be looking at a second later sits outside it.
     -->
     <div id="app" class="app-root">
-      <section class="intro">
-        <h1>Developer converters that run entirely in your browser</h1>
-        <p class="intro__lead">
-          FormatPort is a toolbox of JSON, YAML, TOML, CSV, TSV, XML, JWT, Base64, cURL, regex,
-          hash and text converters — pick any input and output format and it converts between them. Everything is parsed and generated locally by JavaScript in this tab.
-          There is no server component, no account, and no analytics.
-        </p>
-        <p class="intro__privacy">
-          <strong>Private by design.</strong> Your input never leaves this browser.
-          Conversions run locally on your device.
-        </p>
-        <h2>Popular converters</h2>
-        <ul class="intro__grid">
-          <li><a href="/convert/">Convert any format</a> — JSON, YAML, TOML, CSV, TSV, XML and HTML tables, any pair</li>
-          <li><a href="/json-to-yaml/">JSON to YAML</a> — readable config from an API response</li>
-          <li><a href="/csv-to-json/">CSV to JSON</a> — spreadsheet exports into records</li>
-          <li><a href="/json-to-typescript/">JSON to TypeScript</a> — interfaces from a sample payload</li>
-          <li><a href="/jwt-decoder/">JWT Decoder</a> — inspect claims without uploading the token</li>
-          <li><a href="/curl-to-code/">cURL to code</a> — fetch, axios or Python requests</li>
-          <li><a href="/regex-tester/">Regex Tester</a> — with a worker timeout so the tab never freezes</li>
-        </ul>
-
-        <h2>Browse by category</h2>
-        <ul class="intro__grid">
-          <li><a href="/tools/data/">Data format converters</a> — JSON, YAML, TOML, CSV, TSV, XML and HTML tables, any pair</li>
-          <li><a href="/tools/code/">Code generators</a> — TypeScript, Zod, Python, Go, SQL and JSON Schema from a JSON sample</li>
-          <li><a href="/tools/encoding/">Encoding, hashing and tokens</a> — Base64, URL encoding, SHA-256, MD5, JWT and cURL</li>
-          <li><a href="/tools/time/">Timestamps and identifiers</a> — Unix time, ISO 8601, UUID and ULID</li>
-          <li><a href="/tools/text/">Text tools</a> — case conversion, regex testing and diffing</li>
-        </ul>
-        <p><a href="/tools/">See all 25 tools</a></p>
-      </section>
+      <p class="intro__fallback">The JSON to YAML converter opens here. Every tool listed below also has its own page and works the same way.</p>
     </div>
+
+    <section class="intro" data-seo-tool="home">
+      <p class="intro__privacy">
+        <strong>Private by design.</strong> Your input never leaves this browser.
+        Conversions run locally on your device.
+      </p>
+
+      <h2>Popular converters</h2>
+      <ul class="intro__grid">
+        <li><a href="/convert/">Convert any format</a> — JSON, YAML, TOML, CSV, TSV, XML and HTML tables, any pair</li>
+        <li><a href="/json-to-yaml/">JSON to YAML</a> — readable config from an API response</li>
+        <li><a href="/csv-to-json/">CSV to JSON</a> — spreadsheet exports into records</li>
+        <li><a href="/json-to-typescript/">JSON to TypeScript</a> — interfaces from a sample payload</li>
+        <li><a href="/jwt-decoder/">JWT Decoder</a> — inspect claims without uploading the token</li>
+        <li><a href="/curl-to-code/">cURL to code</a> — fetch, axios or Python requests</li>
+        <li><a href="/regex-tester/">Regex Tester</a> — with a worker timeout so the tab never freezes</li>
+      </ul>
+
+      <h2>Browse by category</h2>
+      <ul class="intro__grid">
+        <li><a href="/tools/data/">Data format converters</a> — JSON, YAML, TOML, CSV, TSV, XML and HTML tables, any pair</li>
+        <li><a href="/tools/code/">Code generators</a> — TypeScript, Zod, Python, Go, SQL and JSON Schema from a JSON sample</li>
+        <li><a href="/tools/encoding/">Encoding, hashing and tokens</a> — Base64, URL encoding, SHA-256, MD5, JWT and cURL</li>
+        <li><a href="/tools/time/">Timestamps and identifiers</a> — Unix time, ISO 8601, UUID and ULID</li>
+        <li><a href="/tools/text/">Text tools</a> — case conversion, regex testing and diffing</li>
+      </ul>
+      <p><a href="/tools/">See all 25 tools</a></p>
+    </section>
   </main>
 </div>
 

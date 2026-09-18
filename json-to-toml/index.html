@@ -168,13 +168,21 @@
 
       <h1>JSON → TOML</h1>
       <p>Convert a JSON object to TOML.</p>
+    </div>
 
-      <div class="seo-body">
+    <!--
+      These notes sit OUTSIDE #app deliberately. app.js clears #app when it
+      boots, so anything inside it is gone from the rendered DOM — which is the
+      DOM a search engine indexes, and the one a reader sees a second after the
+      page paints. Out here they survive the boot. app.js hides them if the
+      visitor navigates on to another tool, because they describe this page.
+    -->
+    <div class="seo-body" id="tool-notes" data-seo-tool="json-to-toml">
       <p>Private by design. Your input never leaves this browser. Conversions run locally on your device.</p>
 
       <h2>What this tool handles</h2>
       <ul>
-        <li>A JSON array at the document root is refused — wrap it in an object first.</li>
+        <li>A JSON array at the document root is wrapped in a table named items, and the wrapping is reported.</li>
         <li>Null values are dropped and every dropped path is reported.</li>
         <li>Nested objects become TOML tables and arrays of objects become [[array]] blocks.</li>
       </ul>
@@ -193,6 +201,31 @@ ports = [ 80, 443 ]
 name = &quot;Ada&quot;</code></pre>
         </div>
       </div>
+      <h2>When you would use it</h2>
+      <ul class="seo-cases">
+        <li><strong>Writing a Cargo or pyproject section</strong> — A dependency map you already hold as JSON becomes a [dependencies] table, and a nested object such as tool.ruff becomes the [tool.ruff] header that file expects.</li>
+        <li><strong>Repeated blocks in a wrangler.toml</strong> — An array of objects is emitted as one [[name]] block per element, which is the shape [[kv_namespaces]] or [[redirects]] entries take when a script generates them rather than a person typing them.</li>
+        <li><strong>Moving a project off a JSON config file</strong> — Tools that have switched from a .json config to a .toml one need the same settings in the new syntax. Convert once and commit the result, rather than retyping every key by hand.</li>
+      </ul>
+      <h2>Common questions</h2>
+      <div class="seo-faq">
+        <div class="seo-faq__item">
+          <h3>What happens to an array at the document root?</h3>
+          <p>TOML requires a table there, so the records are wrapped in a table named items and the wrapper is reported as a warning. A root value that is a string, number or null is refused outright, because there is nothing sensible to wrap.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Can a TOML array hold mixed types?</h3>
+          <p>Yes, and one is written out unchanged: [1, &quot;a&quot;, true] survives the conversion. Mixed-type arrays became legal in TOML 1.0, so a parser pinned to an older revision may still reject what comes out.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Why is my timestamp a quoted string rather than a date?</h3>
+          <p>JSON has no date type, so &quot;2024-05-01T00:00:00Z&quot; arrives as text and leaves as text in quotes, not as a TOML offset date-time. Retype the value without quotes afterwards if the reader expects a real date.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Why did the key order change?</h3>
+          <p>Everything written after a [table] header belongs to that table, so plain key-value pairs are emitted first and every table and array of tables after them. Order within each table follows the JSON.</p>
+        </div>
+      </div>
 
       <h2>Related tools</h2>
       <ul>
@@ -204,7 +237,6 @@ name = &quot;Ada&quot;</code></pre>
         <li><a href="/csv-to-json/">CSV → JSON</a> — Parse CSV or TSV into JSON, with delimiter detection and optional type coercion.</li>
       </ul>
       <p><a href="/tools/">Browse all 25 tools</a></p>
-      </div>
     </div>
   </main>
 </div>

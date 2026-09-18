@@ -52,7 +52,7 @@ export function renderToolNav(container, activeSlug) {
  * Build the whole workspace for a tool. Returns a map of the live nodes the
  * controller needs, so app.js never has to query the DOM by selector.
  */
-export function renderWorkspace(root, tool, { options, settings, formats }) {
+export function renderWorkspace(root, tool, { options, settings, formats, headingLevel = 'h1', showRelated = true }) {
   clearNode(root);
   const refs = {};
   // `formats` is present only for the format-matrix tools; everything else
@@ -66,7 +66,7 @@ export function renderWorkspace(root, tool, { options, settings, formats }) {
 
   /* --- Heading ------------------------------------------------- */
   const head = el('header', { className: 'tool-head' });
-  head.appendChild(el('h1', { className: 'tool-head__title', text: tool.label }));
+  head.appendChild(el(headingLevel, { className: 'tool-head__title', text: tool.label }));
   head.appendChild(el('p', { className: 'tool-head__description', text: tool.description }));
 
   if (activeFormats) {
@@ -175,7 +175,10 @@ export function renderWorkspace(root, tool, { options, settings, formats }) {
   root.appendChild(optionsPanel.node);
 
   /* --- Related -------------------------------------------------- */
-  const related = relatedTools(tool, 5);
+  // The static landing page already carries a richer related list, with a line
+  // of description per link, and it survives this render. Drawing a second,
+  // barer one under it would just repeat the heading.
+  const related = showRelated ? relatedTools(tool, 5) : [];
   if (related.length) {
     const section = el('nav', { className: 'related', attrs: { 'aria-label': 'Related tools' } });
     section.appendChild(el('h2', { text: 'Related tools' }));

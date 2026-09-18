@@ -168,8 +168,16 @@
 
       <h1>JWT Decoder</h1>
       <p>Decode a JSON Web Token header and payload locally. Signatures are not verified.</p>
+    </div>
 
-      <div class="seo-body">
+    <!--
+      These notes sit OUTSIDE #app deliberately. app.js clears #app when it
+      boots, so anything inside it is gone from the rendered DOM — which is the
+      DOM a search engine indexes, and the one a reader sees a second after the
+      page paints. Out here they survive the boot. app.js hides them if the
+      visitor navigates on to another tool, because they describe this page.
+    -->
+    <div class="seo-body" id="tool-notes" data-seo-tool="jwt-decoder">
       <p>Private by design. Your input never leaves this browser. Conversions run locally on your device.</p>
 
       <h2>What this tool handles</h2>
@@ -179,6 +187,58 @@
         <li>Registered claims such as exp, iat and nbf are shown as readable dates alongside their raw values.</li>
         <li>A malformed segment is reported rather than guessed at.</li>
       </ul>
+      <h2>Example</h2>
+      <div class="seo-example">
+        <div>
+          <h3>JWT</h3>
+          <pre><code>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFkYSBMb3ZlbGFjZSIsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjoxNzE2MjM5MDIyfQ.dummy-signature-not-verified</code></pre>
+        </div>
+        <div>
+          <h3>Decoded token</h3>
+          <pre><code>// Header
+{
+  &quot;alg&quot;: &quot;HS256&quot;,
+  &quot;typ&quot;: &quot;JWT&quot;
+}
+
+// Payload
+{
+  &quot;sub&quot;: &quot;1234567890&quot;,
+  &quot;name&quot;: &quot;Ada Lovelace&quot;,
+  &quot;iat&quot;: 1516239022,
+  &quot;exp&quot;: 1716239022
+}
+
+// Signature (not verified, shown as-is)
+dummy-signature-not-verified</code></pre>
+        </div>
+      </div>
+      <h2>When you would use it</h2>
+      <ul class="seo-cases">
+        <li><strong>Chasing down a 401 from an API</strong> — Paste the token exactly as it appears in the Authorization header — a leading &quot;Bearer &quot; is stripped for you — and read the sub, aud and scope values the API is actually receiving.</li>
+        <li><strong>Telling an expiry apart from a permissions problem</strong> — Beside the raw exp the decoder prints either how long the token remains valid or an EXPIRED marker, which settles in one glance whether the call failed because the token lapsed.</li>
+        <li><strong>Tracking down which key signed a token</strong> — The header's kid is lifted out onto its own line, so it can be matched against an entry in your JWKS when a key rotation has left services disagreeing.</li>
+        <li><strong>Spotting a malformed or unsigned token</strong> — An alg of &quot;none&quot; is flagged as unsigned and therefore untrusted. Input that does not split into exactly three segments is rejected with the count that was found, which usually means the token was truncated in transit.</li>
+      </ul>
+      <h2>Common questions</h2>
+      <div class="seo-faq">
+        <div class="seo-faq__item">
+          <h3>Why does decoding a JWT not tell me it is valid?</h3>
+          <p>Decoding reverses the base64url encoding and nothing else: it reports what the token claims, not whether those claims are genuine. Confirming that requires the issuer's signing key to recompute the signature, and this tool has no key and requests none, so it never verifies.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Is the payload encrypted?</h3>
+          <p>No. A signed JWT is encoded, not encrypted, so anyone who gets hold of the token can read every claim in it. Nothing secret belongs in a payload.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>What is the kid header for?</h3>
+          <p>It names the key the issuer signed with, so a verifier can select the right entry from a JWKS while several keys are live. It is a hint from the token itself, so a verifier must still pin the algorithm it expects instead of trusting the header.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Are exp and iat in seconds or milliseconds?</h3>
+          <p>Seconds since the epoch, as RFC 7519 requires, which makes them ten digits today. Code that passes a millisecond value straight in produces a token that claims to expire thousands of years from now.</p>
+        </div>
+      </div>
 
       <h2>Related tools</h2>
       <ul>
@@ -188,7 +248,6 @@
         <li><a href="/hash-generator/">Hash Generator</a> — Compute SHA-256, SHA-384, SHA-512, SHA-1 and MD5 digests of text or a file.</li>
       </ul>
       <p><a href="/tools/">Browse all 25 tools</a></p>
-      </div>
     </div>
   </main>
 </div>

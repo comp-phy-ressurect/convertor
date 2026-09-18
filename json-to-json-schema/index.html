@@ -168,8 +168,16 @@
 
       <h1>JSON → JSON Schema</h1>
       <p>Infer a JSON Schema from a sample document.</p>
+    </div>
 
-      <div class="seo-body">
+    <!--
+      These notes sit OUTSIDE #app deliberately. app.js clears #app when it
+      boots, so anything inside it is gone from the rendered DOM — which is the
+      DOM a search engine indexes, and the one a reader sees a second after the
+      page paints. Out here they survive the boot. app.js hides them if the
+      visitor navigates on to another tool, because they describe this page.
+    -->
+    <div class="seo-body" id="tool-notes" data-seo-tool="json-to-json-schema">
       <p>Private by design. Your input never leaves this browser. Conversions run locally on your device.</p>
 
       <h2>What this tool handles</h2>
@@ -177,7 +185,7 @@
         <li>Emits draft-07 or 2020-12.</li>
         <li>Required lists the keys that appear in every observed object.</li>
         <li>additionalProperties can be pinned to false.</li>
-        <li>Arrays are typed from their first element.</li>
+        <li>Array items are merged across every element, so a mixed array gets a list of types.</li>
       </ul>
       <h2>Example</h2>
       <div class="seo-example">
@@ -208,6 +216,32 @@
 }</code></pre>
         </div>
       </div>
+      <h2>When you would use it</h2>
+      <ul class="seo-cases">
+        <li><strong>Failing the build when a payload changes</strong> — Generate from a recorded request body, commit the schema, and validate against it with ajv or check-jsonschema in a pipeline step so a contract change is caught there instead of in an integration test.</li>
+        <li><strong>An entry under components/schemas</strong> — OpenAPI 3.1 uses the 2020-12 dialect, so select that draft and delete the $schema line before pasting. For 3.0, a type array such as [&quot;string&quot;, &quot;null&quot;] has to be rewritten using nullable.</li>
+        <li><strong>Catching typos in a config file</strong> — Forbidding additional properties makes an unrecognised key an error rather than something quietly ignored, and it is applied to every object in the document, not only the outermost one.</li>
+        <li><strong>Autocomplete while editing JSON by hand</strong> — Point an editor at the generated file through a $schema key or a workspace setting and it will complete property names and underline the ones that do not belong.</li>
+      </ul>
+      <h2>Common questions</h2>
+      <div class="seo-faq">
+        <div class="seo-faq__item">
+          <h3>How do I get a required list I can trust?</h3>
+          <p>Feed it an array of records. A key is required when it was present in every object observed at that position, so a single sample makes all of its keys required simply because nothing contradicted them.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Does it infer format, enum or length constraints?</h3>
+          <p>No. Every string is {&quot;type&quot;: &quot;string&quot;} with no format, pattern, minLength or enum, and numbers get no minimum or maximum. An email, a UUID and an ISO timestamp are therefore indistinguishable in the output.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>How is an array of mixed values typed?</h3>
+          <p>Every element is taken into account, not just the first: [1, &quot;a&quot;, null] produces &quot;type&quot;: [&quot;integer&quot;, &quot;string&quot;, &quot;null&quot;], and a position that mixes objects with arrays produces an anyOf that is usually broader than the real contract.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>What differs between the two drafts on offer?</h3>
+          <p>Only the $schema URI. The same keywords are emitted either way — no prefixItems, no $defs and no $ref — and every nested schema is written out in place, so a shape repeated twice appears twice.</p>
+        </div>
+      </div>
 
       <h2>Related tools</h2>
       <ul>
@@ -219,7 +253,6 @@
         <li><a href="/convert/">Convert any format</a> — Pick an input format and an output format and convert between any pair.</li>
       </ul>
       <p><a href="/tools/">Browse all 25 tools</a></p>
-      </div>
     </div>
   </main>
 </div>

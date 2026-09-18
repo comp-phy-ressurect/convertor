@@ -168,8 +168,16 @@
 
       <h1>Hash Generator</h1>
       <p>Compute SHA-256, SHA-384, SHA-512, SHA-1 and MD5 digests of text or a file.</p>
+    </div>
 
-      <div class="seo-body">
+    <!--
+      These notes sit OUTSIDE #app deliberately. app.js clears #app when it
+      boots, so anything inside it is gone from the rendered DOM — which is the
+      DOM a search engine indexes, and the one a reader sees a second after the
+      page paints. Out here they survive the boot. app.js hides them if the
+      visitor navigates on to another tool, because they describe this page.
+    -->
+    <div class="seo-body" id="tool-notes" data-seo-tool="hash-generator">
       <p>Private by design. Your input never leaves this browser. Conversions run locally on your device.</p>
 
       <h2>What this tool handles</h2>
@@ -180,6 +188,45 @@
         <li>A file is hashed from its bytes rather than its text, so any file type works.</li>
         <li>MD5 and SHA-1 are marked in the options: both are broken for collision resistance and unfit for signatures or passwords.</li>
       </ul>
+      <h2>Example</h2>
+      <div class="seo-example">
+        <div>
+          <h3>Text</h3>
+          <pre><code>hello world</code></pre>
+        </div>
+        <div>
+          <h3>Digests</h3>
+          <pre><code>SHA-256  b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9
+SHA-512  309ecc489c12d6eb4cc40f50c902f2b4d0ed77ee511a7c7a9bcd3ca86d4cd86f989dd35bc5ff499670da34255b45b0cfd830e81f605dcf7dc5542e93ae9cd76f
+MD5      5eb63bbbe01eeed093cb22bb8f5acdc3</code></pre>
+        </div>
+      </div>
+      <h2>When you would use it</h2>
+      <ul class="seo-cases">
+        <li><strong>Verifying a download against its checksum</strong> — Drop the file onto the input and compare the SHA-256 digest with the one the project publishes next to the release. A file larger than 10 MiB is declined rather than read.</li>
+        <li><strong>Proving two files are byte-identical</strong> — Hash each one and compare the hex: matching SHA-256 digests mean the bytes match, including anything a visual diff would not show. Tick several algorithms to get every digest from one pass over the input.</li>
+        <li><strong>Matching a vendor list printed in capitals</strong> — Hex digests are often published uppercase, and a string comparison cares. &quot;Uppercase output&quot; reprints the same digest in capitals so the two lines can be diffed directly.</li>
+        <li><strong>Content addressing and ETag values</strong> — The same bytes always produce the same digest, which is what makes a hash usable as a cache key, an ETag or a deduplication key for stored objects.</li>
+      </ul>
+      <h2>Common questions</h2>
+      <div class="seo-faq">
+        <div class="seo-faq__item">
+          <h3>Is hashing the same as encryption?</h3>
+          <p>No. A hash takes no key and runs one way only: it maps any input to a fixed-length digest, and no operation turns that digest back into the original bytes. Encryption is reversible by whoever holds the key.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Is MD5 safe for storing passwords?</h3>
+          <p>No, and nor is plain SHA-256. Both are built to be fast, which is exactly what someone guessing billions of passwords wants; password storage needs a slow salted function such as argon2, scrypt or bcrypt.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Can I still use MD5 or SHA-1 for anything?</h3>
+          <p>Only as a non-adversarial checksum — catching a corrupted transfer, or matching a value a legacy system already stores. Collisions can be manufactured on demand for both, MD5 in seconds and SHA-1 since the 2017 SHAttered attack, so neither proves that a file has not been tampered with.</p>
+        </div>
+        <div class="seo-faq__item">
+          <h3>Why does my digest differ from the one I was given?</h3>
+          <p>Hashing covers exact bytes, so a trailing newline, CRLF line endings or a stray space changes the result completely. That is the usual cause when two people hash what looks like the same pasted text.</p>
+        </div>
+      </div>
 
       <h2>Related tools</h2>
       <ul>
@@ -189,7 +236,6 @@
         <li><a href="/curl-to-code/">cURL → code</a> — Translate a cURL command into fetch, axios or Python requests code.</li>
       </ul>
       <p><a href="/tools/">Browse all 25 tools</a></p>
-      </div>
     </div>
   </main>
 </div>

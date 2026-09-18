@@ -850,6 +850,8 @@ input[type="checkbox"] { accent-color: var(--accent); width: 1em; height: 1em; }
  * ------------------------------------------------------------------ */
 
 .intro { max-width: 62ch; }
+.intro--head { margin-bottom: 1.2rem; }
+.intro__fallback { color: var(--text-muted); font-size: .92rem; }
 .intro__lead { font-size: 1.02rem; color: var(--text-muted); }
 .intro__privacy {
   padding: .6rem .8rem;
@@ -884,6 +886,11 @@ input[type="checkbox"] { accent-color: var(--accent); width: 1em; height: 1em; }
 }
 .seo-example code { font-family: var(--mono); }
 
+.seo-cases { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .45rem; }
+.seo-cases strong { color: var(--text); font-weight: 600; }
+.seo-faq { display: flex; flex-direction: column; gap: .7rem; }
+.seo-faq__item p { margin: 0; }
+
 .breadcrumb { margin-bottom: .7rem; font-size: .8rem; color: var(--text-faint); }
 .breadcrumb ol {
   list-style: none;
@@ -900,14 +907,6 @@ input[type="checkbox"] { accent-color: var(--accent); width: 1em; height: 1em; }
 
 .legal { max-width: 70ch; margin: 2rem auto; padding: 0 1rem 3rem; }
 .legal h1 { margin-bottom: .2em; }
-.legal__template {
-  background: var(--warning-soft);
-  border-left: 3px solid var(--warning);
-  color: var(--warning);
-  padding: .7rem .9rem;
-  border-radius: var(--radius-sm);
-  font-size: .88rem;
-}
 
 /* ------------------------------------------------------------------ *
  * Footer

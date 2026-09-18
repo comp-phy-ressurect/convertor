@@ -102,6 +102,11 @@ function forgetSourceFile() {
 const dom = {
   app: document.getElementById('app'),
   toolNav: document.getElementById('tool-nav'),
+  // The landing page's own notes — "What this tool handles", the example, the
+  // questions. They live outside #app so that clearing #app on boot does not
+  // delete them: what a crawler indexes, and what a reader ends up looking at,
+  // is the DOM after this script has run, not the HTML that arrived.
+  pageNotes: document.querySelectorAll('[data-seo-tool]'),
   palette: document.getElementById('palette'),
   paletteInput: document.getElementById('palette-input'),
   paletteResults: document.getElementById('palette-results'),
@@ -159,6 +164,37 @@ function boot() {
  */
 let keepFormatsOnNavigate = false;
 
+/**
+ * Show the static page notes only while the visitor is still on the page they
+ * landed on. They describe that tool and that URL; after an in-app navigation
+ * they would be describing something else. Hidden rather than removed, so
+ * going back reinstates them.
+ *
+ * Returns true when notes for this tool are on the page, which is also the
+ * signal that renderWorkspace should not draw its own related-tools list.
+ */
+function syncPageNotes(slug) {
+  let matched = false;
+  for (const notes of dom.pageNotes) {
+    const belongsHere = notes.dataset.seoTool === slug;
+    notes.hidden = !belongsHere;
+    if (belongsHere) matched = true;
+  }
+  return matched;
+}
+
+/**
+ * Keep the canonical link and og:url pointing at the URL in the address bar.
+ * An in-app navigation changes the path, and a canonical left behind on the
+ * landing page would claim every tool is the one the visitor happened to open
+ * first — the kind of mistake that makes a crawler pick the wrong page.
+ */
+function syncCanonical() {
+  const url = new URL(globalThis.location.pathname, globalThis.location.origin).href;
+  document.querySelector('link[rel="canonical"]')?.setAttribute('href', url);
+  document.querySelector('meta[property="og:url"]')?.setAttribute('content', url);
+}
+
 function selectTool(slug) {
   const tool = slug === 'home' ? getToolBySlug('json-to-yaml') : getToolBySlug(slug);
   if (!tool) {
@@ -212,13 +248,25 @@ function selectTool(slug) {
   state.suggestionDismissedFor = null;
   keepFormatsOnNavigate = false;
 
-  document.title = tool.seoTitle ? tool.seoTitle + ' · ' + PRODUCT.name : tool.label + ' · ' + PRODUCT.name;
+  // The homepage is not a tool page. It opens with a converter ready to use,
+  // but it keeps its own title and its own <h1>: letting the converter take
+  // those over made / and /json-to-yaml/ render as the same document, which is
+  // a duplicate of the site's strongest page for no benefit to anyone.
+  const onHome = slug === 'home';
+  const showingNotes = syncPageNotes(onHome ? 'home' : tool.slug);
+
+  if (!onHome) {
+    document.title = tool.seoTitle ? tool.seoTitle + ' · ' + PRODUCT.name : tool.label + ' · ' + PRODUCT.name;
+  }
+  syncCanonical();
   ui.renderToolNav(dom.toolNav, tool.slug);
 
   state.refs = ui.renderWorkspace(dom.app, tool, {
     options: state.options,
     settings: state.settings,
     formats: state.formats,
+    headingLevel: onHome ? 'h2' : 'h1',
+    showRelated: !showingNotes,
   });
 
   wireWorkspace();
@@ -249,7 +297,7 @@ function selectTool(slug) {
 }
 
 function renderHome() {
-  selectTool('json-to-yaml');
+  selectTool('home');
 }
 
 /**

@@ -166,8 +166,10 @@ is the measurement layer for search itself.
 
 - Set the real `PRODUCTION_ORIGIN` and regenerate. Every canonical, OG URL and
   sitemap entry currently says `example.com`.
-- Complete `privacy.html`: `[DATE]`, the `[Operator: …]` blocks, a real contact
-  address.
+- ~~Complete `privacy.html`: `[DATE]`, the `[Operator: …]` blocks, a real contact
+  address.~~ Done: the date and the contact address are in place, and the
+  operator note is gone. What it deferred — controller identity, legal bases,
+  retention periods, supervisory authority — still needs the owner.
 - Verify in Search Console and Bing, submit the sitemap.
 - Confirm the host serves `404.html` for unknown paths with a real 404 status.
   Cloudflare Pages and Netlify both do this automatically for a root
