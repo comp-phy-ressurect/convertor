@@ -268,6 +268,34 @@ Both are fixed, along with the thinness itself: the 25 tool pages now carry
 220–552 words each, written from the converters' own behaviour, where the
 median was 165. `tests/seo.mjs` fails if either regresses.
 
+## Manual search check, 2026-09-19
+
+A sanity check of what the engines are showing, not a ranking measurement —
+results are personalised and Search Console remains the source of truth.
+
+**Google.** `site:formatport.com` returns 10 visible results: `/`, `/privacy`,
+`/terms`, `/tools/`, `/jwt-decoder/`, `/diff-checker/`, `/json-formatter/`,
+`/case-converter/`, `/ulid-generator/`, `/hash-generator/`. `"FormatPort"`
+returns the site at position 1. `yaml to json` does not place it in the top 10,
+which matches the 43.5 that Search Console reports.
+
+One result is worth reading carefully. The stored title for the homepage is:
+
+> JSON to YAML Converter — Local & Private · FormatPort
+
+That is the converter's title, not the homepage's — direct confirmation that
+Google indexed the rendered DOM after `app.js` had overwritten `document.title`.
+The `http://formatport.com/` entry, listed separately, carries the correct
+"FormatPort — Developer Converters That Run in Your Browser". Both come from the
+same file; only the rendering differed. A re-crawl of `/` has been requested.
+
+**Bing.** Nothing. `site:formatport.com` and the brand query both return no
+results from Bing's index, checked through DuckDuckGo after Bing itself served a
+CAPTCHA. IndexNow has been submitting URLs since 14 September and has been
+accepted every time, so this is not a submission failure: IndexNow announces a
+URL, it does not oblige anyone to index it. Bing Webmaster Tools has never been
+set up, and that is the thing most likely to move this.
+
 ## What to re-measure, and when
 
 The 30- and 90-day checks above still stand. Add to the 30-day one:

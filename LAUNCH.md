@@ -18,13 +18,20 @@ rests entirely on the claims being checkable.
 Blocking. A launch post is a single shot; spending it on a broken link or a
 stale preview wastes it.
 
-- [ ] **Fix `www.formatport.com`** — currently HTTP 522. `SEARCH_ENGINE_SETUP.md` §0.
-- [ ] Deploy `main`, so the FormatPort branding and `/og.png` are live.
-- [ ] `curl -sSI https://formatport.com/og.png` returns 200 — the social card is the post's thumbnail on every platform.
-- [ ] Paste the homepage into <https://www.opengraph.xyz/> and confirm the card renders. Scrapers cache hard; check before, not after.
-- [ ] Search Console property verified and sitemap submitted (`SEARCH_ENGINE_SETUP.md` §1).
-- [ ] Open a tool page with JavaScript disabled — the H1, description, example and links should all be there.
-- [ ] Decide whether `claude_instructions.md` and `todo_notes.txt` belong in a public repository. They are gitignored today; confirm that is what you want.
+Checked on 2026-09-19:
+
+- [x] **`www.formatport.com`** — was HTTP 522, now 301s to the apex at the edge. `http://` does too. Verified with `curl`.
+- [x] Deploy `main` — live, FormatPort branding and `/og.png` included.
+- [x] `curl -sSI https://formatport.com/og.png` returns 200, `image/png`, 86 KB.
+- [x] Open Graph tags on `/` carry the right title, description, absolute `og:url` and a 1200x630 `og:image`. Still worth pasting the homepage into <https://www.opengraph.xyz/> once before posting: scrapers cache hard, and this confirms what they will actually fetch rather than what the markup says.
+- [x] Search Console property verified, sitemap submitted and read successfully.
+- [x] A tool page with JavaScript disabled shows its h1, description, example, questions and links. As of 19 September that content also survives with JavaScript *on*, which it previously did not.
+- [x] `claude_instructions.md` and `todo_notes.txt` are gitignored and untracked — they are not in the public repository.
+
+Two things that are still true and worth knowing before you post:
+
+- **Bing has not indexed the site at all.** IndexNow has been submitting URLs since 14 September and Bing's index still returns nothing for `formatport.com`, brand query included. IndexNow is a discovery ping, not an indexing promise. This does not block a launch — it means Bing traffic is not part of week one.
+- **Google's stored title for `/` is still the converter's**, because it indexed the rendered DOM before the 19 September fix. A re-crawl has been requested. It affects what a Google result looks like, not what a Hacker News or Reddit post looks like, so it is not a reason to wait — but if you want the search result to read correctly when the post drives brand searches, give the re-crawl a few days.
 
 ---
 
