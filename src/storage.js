@@ -91,7 +91,7 @@ const DEFAULT_SETTINGS = Object.freeze({
   historyEnabled: true,
   autoRun: true,
   wrapOutput: true,
-  theme: 'system',
+  theme: 'dark',
 });
 
 export function getSettings() {

@@ -3,7 +3,9 @@
  *
  * A single stylesheet, no build step, no framework. Colours are defined once as
  * custom properties on :root and re-declared for dark mode, so every component
- * below is written against tokens rather than literal colours.
+ * below is written against tokens rather than literal colours. Dark is the
+ * default: every page ships <html data-theme="dark">, and app.js swaps it for
+ * the visitor's own choice (Light, or Match system → no attribute).
  *
  * Accessibility notes baked in here:
  *  - focus is always visible (:focus-visible outline, never outline:none)
@@ -92,7 +94,11 @@
   }
 }
 
+:root[data-theme="light"] { color-scheme: light; }
+
 :root[data-theme="dark"] {
+  color-scheme: dark;
+
   --bg: #12141a;
   --bg-raised: #1a1d25;
   --bg-sunken: #0e1015;
